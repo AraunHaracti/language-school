@@ -1,2 +1,2 @@
-# lenguage-school
+# language-school
 Учет клиентов в языковой школе. Проект по УП
