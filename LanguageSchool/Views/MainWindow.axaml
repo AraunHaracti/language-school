@@ -10,11 +10,24 @@
         Title="LanguageSchool">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <ListBox BorderThickness="0" Background="AliceBlue" ItemsSource="{Binding PageViewModels}" SelectedItem="{Binding SelectedPageViewModel}" SelectedIndex="0" MinWidth="40">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+        <ContentPresenter Grid.Column="1" Content="{Binding SelectedPageViewModel}" x:Name="OutputView"/>
+    </Grid>
 
 </Window>

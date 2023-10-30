@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using LanguageSchool.Interfaces;
 using LanguageSchool.ViewModels;
 using LanguageSchool.Views;
 
@@ -8,6 +10,7 @@ namespace LanguageSchool;
 
 public partial class App : Application
 {
+    
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -19,7 +22,13 @@ public partial class App : Application
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = new MainWindowViewModel
+                {
+                    PageViewModels = new List<IPageViewModel>
+                    {
+                        new TestViewModel(),
+                    }
+                },
             };
         }
 
