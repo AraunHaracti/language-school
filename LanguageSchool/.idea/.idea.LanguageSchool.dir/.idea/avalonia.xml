@@ -5,8 +5,22 @@
       <map>
         <entry key="App.axaml" value="LanguageSchool.csproj" />
         <entry key="ViewModels/Test.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/CkientsView.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/ClientsView.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/CoursesView.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/Dilogs/ClientInfoCard.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/MainWindow.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/TeachersView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/Test.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/Test2View.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/TestView.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/UserControls/AttendancesView.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/UserControls/ClientsView.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/UserControls/CoursesView.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/UserControls/GroupsView.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/UserControls/PaymentsView.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/UserControls/SchedulesView.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/UserControls/TeachersView.axaml" value="LanguageSchool.csproj" />
       </map>
     </option>
   </component>

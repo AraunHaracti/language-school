@@ -1,0 +1,41 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:LanguageSchool.ViewModels.UserControls"
+             xmlns:utils="clr-namespace:LanguageSchool.Utils"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:CoursesViewModel"
+             x:Class="LanguageSchool.Views.UserControls.CoursesView">
+    <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                        <TextBox x:Name="SearchTextBox" Text="{Binding SearchQuery, Mode=TwoWay}" Classes="Search"/>
+                        <Button x:Name="AddClient" Content="Добавить" Command="{Binding AddCourseButton}" Classes="Action"/>
+                        <Button x:Name="EditClient" Content="Изменить" Command="{Binding EditCourseButton}" Classes="Action"/>
+                        <ComboBox x:Name="LanguageComboBox"/>
+                        <ComboBox x:Name="LevelLanguageComboBox"/>
+                </StackPanel>
+        
+                <DataGrid x:Name="ItemDataGrid" 
+                          x:CompileBindings="False" 
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True" 
+                          ItemsSource="{Binding ItemsOnDataGrid}"
+                          Height="400">
+                        <DataGrid.Columns>
+                                <DataGridTextColumn Header="Название" Binding="{Binding Name}"/>
+                                <DataGridTextColumn Header="Описание" Binding="{Binding Info}"/>
+                                <DataGridTextColumn Header="Язык" Binding="{Binding }"/>
+                                <DataGridTextColumn Header="Уровень" Binding="{Binding }"/>
+                                <DataGridTextColumn Header="Цена" Binding="{Binding Price}"/>
+                        </DataGrid.Columns>
+                </DataGrid>        
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="15">
+                        <Button x:Name="First" Content="&lt;&lt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.FirstItems}" Margin="5"/>
+                        <Button x:Name="Previous" Content="&lt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.PreviousItems}" Margin="5"/>
+                        <Button x:Name="Next" Content="&gt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.NextItems}" Margin="5"/>
+                        <Button x:Name="Last" Content="&gt;&gt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.LastItems}" Margin="5"/>
+                </StackPanel>
+        </StackPanel>
+</UserControl>

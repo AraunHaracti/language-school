@@ -1,33 +1,47 @@
 ﻿using System.Collections.Generic;
-using LanguageSchool.Interfaces;
+using System.ComponentModel;
+using Avalonia.Controls;
+using LanguageSchool.Utils;
 
 namespace LanguageSchool.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase
+public class MainWindowViewModel : INotifyPropertyChanged
 {
-    private IPageViewModel _selectedPageViewModel;
-    private IList<IPageViewModel> _pageViewModels;
-
-    public string Title => $"MultiPage demo - {SelectedPageViewModel?.Title}";
-
-    public IList<IPageViewModel> PageViewModels
+    public event PropertyChangedEventHandler PropertyChanged = delegate { };
+    
+    public List<IModule> Modules { get; private set; }
+    
+    private IModule _SelectedModule;
+    public IModule SelectedModule
     {
-        get => _pageViewModels;
+        get { return _SelectedModule; }
         set
         {
-            _pageViewModels = value;
-            OnPropertyChanged();
+            if (value == _SelectedModule) return;
+            if (_SelectedModule != null) _SelectedModule.Deactivate();
+            _SelectedModule = value;
+            PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModule)));
+            PropertyChanged(this, new PropertyChangedEventArgs("UserInterface"));
         }
     }
-
-    public IPageViewModel SelectedPageViewModel 
+    
+    public MainWindowViewModel(IEnumerable<IModule> modules)
     {
-        get => _selectedPageViewModel; 
-        set 
+        Modules = new List<IModule>(modules);
+        
+        if (this.Modules.Count > 0)
         {
-            _selectedPageViewModel = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(Title));
-        } 
+            SelectedModule = this.Modules[0];
+        }
+    }
+    
+    public UserControl UserInterface
+    {
+        get
+        {
+            if (SelectedModule == null) 
+                return null;
+            return SelectedModule.UserInterface;
+        }
     }
 }

@@ -19,15 +19,19 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <ListBox BorderThickness="0" Background="AliceBlue" ItemsSource="{Binding PageViewModels}" SelectedItem="{Binding SelectedPageViewModel}" SelectedIndex="0" MinWidth="40">
+        <ListBox 
+            ItemsSource="{Binding Modules}"
+            SelectedItem="{Binding SelectedModule, Mode=TwoWay}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Text="{Binding Name}"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         
-        <ContentPresenter Grid.Column="1" Content="{Binding SelectedPageViewModel}" x:Name="OutputView"/>
+        <ContentPresenter Grid.Column="1" 
+                          Content="{Binding UserInterface}" 
+                          x:Name="OutputView"/>
     </Grid>
 
 </Window>

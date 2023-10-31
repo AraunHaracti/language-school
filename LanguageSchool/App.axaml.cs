@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using LanguageSchool.Interfaces;
+using LanguageSchool.Utils;
 using LanguageSchool.ViewModels;
 using LanguageSchool.Views;
 
@@ -20,16 +20,14 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            var modules = ReflectionHelper.CreateAllInstancesOf<IModule>();
+            var vm = new MainWindowViewModel(modules);
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel
-                {
-                    PageViewModels = new List<IPageViewModel>
-                    {
-                        new TestViewModel(),
-                    }
-                },
+                DataContext = vm,
             };
+
+            desktop.MainWindow.Closing += (s, args) => vm.SelectedModule.Deactivate();
         }
 
         base.OnFrameworkInitializationCompleted();

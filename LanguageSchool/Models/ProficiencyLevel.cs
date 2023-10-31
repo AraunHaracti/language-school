@@ -12,7 +12,7 @@ public partial class ProficiencyLevel
 
     public virtual ICollection<ClientLanguage> ClientLanguages { get; set; } = new List<ClientLanguage>();
 
-    public virtual ICollection<Curse> Curses { get; set; } = new List<Curse>();
+    public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
 
     public virtual Language Language { get; set; } = null!;
 

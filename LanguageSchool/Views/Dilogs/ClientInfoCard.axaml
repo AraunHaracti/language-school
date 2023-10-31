@@ -1,0 +1,47 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:LanguageSchool.ViewModels.Dialogs"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:DataType="vm:ClientInfoCardViewModel"
+        x:Class="LanguageSchool.Views.Dilogs.ClientInfoCard"
+        Title="ClientInfoCard">
+        
+        <Design.DataContext>
+                <vm:ClientInfoCardViewModel/>
+        </Design.DataContext>
+        <StackPanel>
+                <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Имя" Width="120" Margin="10"/>
+                                <TextBox Text="{Binding Person.Name}" Width="200" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Фамилия" Width="120" Margin="10"/>
+                                <TextBox Text="{Binding Person.Surname}" Width="200" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="День рождения" Width="120" Margin="10"/>
+                                <TextBox Text="{Binding Person.Birthday}" Width="200" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Телефон" Width="120" Margin="10"/>
+                                <TextBox Text="{Binding Person.Phone}" Width="200" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Почта" Width="120" Margin="10"/>
+                                <TextBox Text="{Binding Person.Email}" Width="200" Margin="10"/>
+                        </StackPanel>
+                </StackPanel>
+                <DataGrid>
+                        <DataGrid.Columns>
+                                <DataGridTextColumn Header="Язык" Binding="{Binding Language}"/>
+                                <DataGridTextColumn Header="Уровень" Binding="{Binding Language}"/>
+                                <DataGridTextColumn Header="Опыт" Binding="{Binding Language}"/>
+                                <DataGridTextColumn Header="Потребности" Binding="{Binding Language}"/>
+                        </DataGrid.Columns>
+                </DataGrid>
+        </StackPanel>
+        
+</Window>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace LanguageSchool.Models;
-public partial class Curse
+public partial class Course
 {
     public int Id { get; set; }
 
