@@ -6,6 +6,5 @@ public class SchedulesViewModel : IDisposable
 {
     public void Dispose()
     {
-        throw new NotImplementedException();
     }
 }

@@ -8,6 +8,10 @@
              x:DataType="vm:ClientsViewModel"
              x:Class="LanguageSchool.Views.UserControls.ClientsView">
     
+        <Design.DataContext>
+                <vm:ClientsViewModel/>
+        </Design.DataContext>
+        
         <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="5">
                         <TextBox x:Name="SearchTextBox" Text="{Binding SearchQuery, Mode=TwoWay}" Classes="Search"/>

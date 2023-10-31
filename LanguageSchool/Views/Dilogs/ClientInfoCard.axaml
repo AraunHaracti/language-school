@@ -36,10 +36,13 @@
                 </StackPanel>
                 <DataGrid>
                         <DataGrid.Columns>
-                                <DataGridTextColumn Header="Язык" Binding="{Binding Language}"/>
-                                <DataGridTextColumn Header="Уровень" Binding="{Binding Language}"/>
-                                <DataGridTextColumn Header="Опыт" Binding="{Binding Language}"/>
-                                <DataGridTextColumn Header="Потребности" Binding="{Binding Language}"/>
+                                <DataGridTemplateColumn>
+                                        
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Язык" Binding="{Binding }"/>
+                                <DataGridTextColumn Header="Уровень" Binding="{Binding }"/>
+                                <DataGridTextColumn Header="Опыт" Binding="{Binding }"/>
+                                <DataGridTextColumn Header="Потребности" Binding="{Binding }"/>
                         </DataGrid.Columns>
                 </DataGrid>
         </StackPanel>

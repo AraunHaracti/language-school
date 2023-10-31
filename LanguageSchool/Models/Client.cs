@@ -10,13 +10,9 @@ public partial class Client
 
     public string Surname { get; set; } = null!;
 
-    public DateOnly Birthday { get; set; }
+    public DateTime Birthday { get; set; }
 
     public string? Phone { get; set; }
 
     public string? Email { get; set; }
-
-    public virtual ICollection<ClientInGroup> ClientInGroups { get; set; } = new List<ClientInGroup>();
-
-    public virtual ICollection<ClientLanguage> ClientLanguages { get; set; } = new List<ClientLanguage>();
 }
