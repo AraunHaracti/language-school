@@ -7,10 +7,6 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="vm:ClientsViewModel"
              x:Class="LanguageSchool.Views.UserControls.ClientsView">
-    
-        <Design.DataContext>
-                <vm:ClientsViewModel/>
-        </Design.DataContext>
         
         <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="5">
@@ -27,11 +23,12 @@
                           AutoGenerateColumns="False" 
                           IsReadOnly="True" 
                           ItemsSource="{Binding ItemsOnDataGrid}"
+                          SelectedItem="{Binding CurrentItem}"
                           Height="400">
                         <DataGrid.Columns>
                                 <DataGridTextColumn Header="Имя" Binding="{Binding Name}"/>
                                 <DataGridTextColumn Header="Фамилия" Binding="{Binding Surname}"/>
-                                <DataGridTextColumn Header="День рождения" Binding="{Binding Birthday}"/>
+                                <DataGridTextColumn Header="День рождения" Binding="{Binding Birthday, StringFormat=d}"/>
                                 <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}"/>
                                 <DataGridTextColumn Header="Почта" Binding="{Binding Email}"/>
                         </DataGrid.Columns>

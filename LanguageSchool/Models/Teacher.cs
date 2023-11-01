@@ -10,9 +10,5 @@ public partial class Teacher
 
     public string Surname { get; set; } = null!;
 
-    public DateOnly Birthday { get; set; }
-
-    public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
-
-    public virtual ICollection<TeacherLanguage> TeacherLanguages { get; set; } = new List<TeacherLanguage>();
+    public DateTime Birthday { get; set; }
 }

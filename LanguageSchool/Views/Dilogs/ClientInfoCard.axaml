@@ -4,47 +4,59 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:LanguageSchool.ViewModels.Dialogs"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        CanResize="False"
+        SizeToContent="WidthAndHeight"
         x:DataType="vm:ClientInfoCardViewModel"
         x:Class="LanguageSchool.Views.Dilogs.ClientInfoCard"
         Title="ClientInfoCard">
         
-        <Design.DataContext>
-                <vm:ClientInfoCardViewModel/>
-        </Design.DataContext>
+
         <StackPanel>
                 <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Имя" Width="120" Margin="10"/>
-                                <TextBox Text="{Binding Person.Name}" Width="200" Margin="10"/>
+                                <TextBox Text="{Binding Person.Name}" Width="300" Margin="10"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Фамилия" Width="120" Margin="10"/>
-                                <TextBox Text="{Binding Person.Surname}" Width="200" Margin="10"/>
+                                <TextBox Text="{Binding Person.Surname}" Width="300" Margin="10"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="День рождения" Width="120" Margin="10"/>
-                                <TextBox Text="{Binding Person.Birthday}" Width="200" Margin="10"/>
+                                <CalendarDatePicker SelectedDate="{Binding Person.Birthday}" Width="300" Margin="10"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Телефон" Width="120" Margin="10"/>
-                                <TextBox Text="{Binding Person.Phone}" Width="200" Margin="10"/>
+                                <TextBox Text="{Binding Person.Phone}" Width="300" Margin="10"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Почта" Width="120" Margin="10"/>
-                                <TextBox Text="{Binding Person.Email}" Width="200" Margin="10"/>
+                                <TextBox Text="{Binding Person.Email}" Width="300" Margin="10"/>
                         </StackPanel>
                 </StackPanel>
-                <DataGrid>
+                
+                <StackPanel Orientation="Horizontal" x:Name="LanguageMenu">
+                        <Button x:Name="AddLanguage" Content="Добавить" Command="{Binding AddLanguageButton}"/>
+                        <Button x:Name="EditLanguage" Content="Изменить" Command="{Binding EditLanguageButton}"/>
+                        <Button x:Name="DeleteLanguage" Content="Удалить" Command="{Binding DeleteLanguageButton}"/>
+                </StackPanel>
+                
+                <DataGrid x:Name="LanguageDataGrid" 
+                          SelectedItem="{Binding CurrentItem}"
+                        ItemsSource="{Binding PersonLanguage}"
+                        Width="420"
+                        Height="200">
                         <DataGrid.Columns>
-                                <DataGridTemplateColumn>
-                                        
-                                </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Язык" Binding="{Binding }"/>
-                                <DataGridTextColumn Header="Уровень" Binding="{Binding }"/>
-                                <DataGridTextColumn Header="Опыт" Binding="{Binding }"/>
-                                <DataGridTextColumn Header="Потребности" Binding="{Binding }"/>
+                                <DataGridTextColumn Header="Язык" Binding="{Binding LanguageName}" Width="140"/>
+                                <DataGridTextColumn Header="Уровень" Binding="{Binding ProficiencyLevelName}" Width="100"/>
+                                <DataGridTextColumn Header="Опыт" Binding="{Binding LastExperience}" Width="150"/>
+                                <DataGridTextColumn Header="Потребности" Binding="{Binding Needs}" Width="150"/>
                         </DataGrid.Columns>
                 </DataGrid>
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+                        <Button x:Name="Ok" Content="Применить" Click="Ok_OnClick" HorizontalContentAlignment="Center" Width="100"/>
+                        <Button x:Name="Exit" Content="Отмена" Click="Exit_OnClick" HorizontalContentAlignment="Center" Width="100"/>
+                </StackPanel>
         </StackPanel>
-        
 </Window>

@@ -13,8 +13,4 @@ public partial class Course
     public string Info { get; set; } = null!;
 
     public double Price { get; set; }
-
-    public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
-
-    public virtual ProficiencyLevel ProficiencyLevel { get; set; } = null!;
 }

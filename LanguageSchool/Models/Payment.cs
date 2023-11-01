@@ -11,6 +11,4 @@ public partial class Payment
     public DateTime Date { get; set; }
 
     public double Count { get; set; }
-
-    public virtual ClientInGroup ClientInGroupNavigation { get; set; } = null!;
 }

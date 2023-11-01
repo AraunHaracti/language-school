@@ -5,16 +5,23 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using Avalonia;
 using Avalonia.Controls;
 using LanguageSchool.Models;
 using LanguageSchool.Utils;
+using LanguageSchool.ViewModels.Dialogs;
+using LanguageSchool.Views.Dilogs;
 using MySql.Data.MySqlClient;
 using ReactiveUI;
+
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace LanguageSchool.ViewModels.UserControls;
 
 public class ClientsViewModel : ViewModelBase, IDisposable
 {
+    private readonly Window _parentWindow;
+    
     private List<Client> _itemsFromDatabase;
 
     private List<Client> _itemsFilter;
@@ -48,6 +55,12 @@ public class ClientsViewModel : ViewModelBase, IDisposable
 
     public ClientsViewModel()
     {
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            _parentWindow = desktop.MainWindow;
+        }
+        
+        
         UpdateItems();
         
         PropertyChanged += OnSearchQueryChanged;
@@ -88,17 +101,26 @@ public class ClientsViewModel : ViewModelBase, IDisposable
     
     public void AddClientButton()
     {
-        
+        var view = new ClientInfoCard(InfoCardEnum.Add);
+        var vm = new ClientInfoCardViewModel(UpdateItems);
+        view.DataContext = vm;
+        view.ShowDialog(_parentWindow);
     }
 
     public void EditClientButton()
     {
-        
+        var view = new ClientInfoCard(InfoCardEnum.Edit);
+        var vm = new ClientInfoCardViewModel(UpdateItems, CurrentItem);
+        view.DataContext = vm;
+        view.ShowDialog(_parentWindow);
     }
 
     public void OpenCardClientButton()
     {
-        
+        var view = new ClientInfoCard(InfoCardEnum.Info);
+        var vm = new ClientInfoCardViewModel(UpdateItems, CurrentItem);
+        view.DataContext = vm;
+        view.ShowDialog(_parentWindow);
     }
     
     private void GetDataFromDatabase()

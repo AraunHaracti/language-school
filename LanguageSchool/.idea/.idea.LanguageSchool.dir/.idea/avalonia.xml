@@ -9,6 +9,7 @@
         <entry key="Views/ClientsView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/CoursesView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/Dilogs/ClientInfoCard.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/Dilogs/ClientLanguageInfoCard.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/MainWindow.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/TeachersView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/Test.axaml" value="LanguageSchool.csproj" />

@@ -13,8 +13,4 @@ public partial class Schedule
     public DateTime Begin { get; set; }
 
     public DateTime End { get; set; }
-
-    public virtual ICollection<AttendanceLog> AttendanceLogs { get; set; } = new List<AttendanceLog>();
-
-    public virtual Group? Group { get; set; }
 }
