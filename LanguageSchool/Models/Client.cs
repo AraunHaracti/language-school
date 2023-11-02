@@ -10,7 +10,7 @@ public partial class Client
 
     public string Surname { get; set; } = null!;
 
-    public DateTime Birthday { get; set; }
+    public DateTime Birthday { get; set; } = DateTime.Today;
 
     public string? Phone { get; set; }
 

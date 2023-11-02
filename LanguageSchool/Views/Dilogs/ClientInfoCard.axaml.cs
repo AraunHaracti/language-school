@@ -28,6 +28,7 @@ public partial class ClientInfoCard : Window
             case InfoCardEnum.Info:
                 languageMenu.IsVisible = false;
                 languageDataGrid.IsVisible = true;
+                this.FindControl<Button>("Ok").IsVisible = false;
                 break;
         }
     }
@@ -35,9 +36,10 @@ public partial class ClientInfoCard : Window
     private void Ok_OnClick(object? sender, RoutedEventArgs e)
     {
         var dataContext = DataContext as ViewModels.Dialogs.ClientInfoCardViewModel;
-        dataContext.ActionClient();
+        bool result = dataContext.ActionClient();
         
-        Close();
+        if (result)
+            Close();
     }
 
     private void Exit_OnClick(object? sender, RoutedEventArgs e)

@@ -24,7 +24,7 @@ public class ClientInfoCardViewModel
     private string _sql = $"select " +
                           $"client_language.id as id, " +
                           $"client_language.client_id as client_id, " +
-                          $"client_language.proficiency_level_id as proficiency_level_id," +
+                          $"client_language.proficiency_level_id as proficiency_level_id, " +
                           $"proficiency_level.name as proficiency_level_name, " +
                           $"proficiency_level.language_id as language_id, " +
                           $"language.name as language_name, " +
@@ -105,8 +105,11 @@ public class ClientInfoCardViewModel
         UpdateItems();
     }
 
-    public void ActionClient()
+    public bool ActionClient()
     {
+        if (Person.Name == null || Person.Name == "" || Person.Surname == null || Person.Surname == "")
+            return false;
+        
         if (_isEdit)
         {
             EditClient();
@@ -117,6 +120,8 @@ public class ClientInfoCardViewModel
         }
         
         _action.Invoke();
+
+        return true;
     }
 
     private void AddClient()
@@ -137,6 +142,9 @@ public class ClientInfoCardViewModel
     public void EditClient()
     {
         string sql = $"update client set " +
+                     $"name = '{Person.Name}', " +
+                     $"surname = '{Person.Surname}', " +
+                     $"birthday = '{Person.Birthday.ToString("yyyy-MM-dd")}', " +
                      $"phone = '{Person.Phone}', " +
                      $"email = '{Person.Email}' " +
                      $"where id = {Person.Id}";

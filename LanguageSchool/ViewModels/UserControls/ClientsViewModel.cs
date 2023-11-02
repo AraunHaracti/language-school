@@ -26,6 +26,17 @@ public class ClientsViewModel : ViewModelBase, IDisposable
 
     private List<Client> _itemsFilter;
     
+    public int CurrentPage { get; set; } = 1;
+
+    public int TotalPages
+    {
+        get
+        {
+            int page = (int)Math.Ceiling(_itemsFilter.Count / (double)10);
+            return page == 0 ? 1 : page;
+        }
+    }
+
     public Client CurrentItem { get; set; }
     
     private string _sql = $"select * from client";
@@ -38,7 +49,7 @@ public class ClientsViewModel : ViewModelBase, IDisposable
         set
         {
             _itemsOnDataGrid = value;
-            this.RaisePropertyChanged();
+            this.RaisePropertyChanged("ItemsOnDataGrid");
         }
     }
 
@@ -49,9 +60,9 @@ public class ClientsViewModel : ViewModelBase, IDisposable
         set
         {
             _searchQuery = value;
+            this.RaisePropertyChanged("SearchQuery");
         }
     }
-
 
     public ClientsViewModel()
     {
@@ -59,7 +70,6 @@ public class ClientsViewModel : ViewModelBase, IDisposable
         {
             _parentWindow = desktop.MainWindow;
         }
-        
         
         UpdateItems();
         
@@ -70,6 +80,7 @@ public class ClientsViewModel : ViewModelBase, IDisposable
     {
         if (e.PropertyName != nameof(SearchQuery)) return;
         Search();
+        TakeItems(TakeItemsEnum.FirstItems);
     }
 
     private void Search()
@@ -77,6 +88,7 @@ public class ClientsViewModel : ViewModelBase, IDisposable
         if (SearchQuery == "")
         {
             _itemsFilter = new(_itemsFromDatabase);
+            return;
         }
 
         _itemsFilter = new(_itemsFromDatabase.Where(it =>
@@ -84,6 +96,8 @@ public class ClientsViewModel : ViewModelBase, IDisposable
             PropertyInfo[] propertyInfos = typeof(Client).GetProperties();
             foreach (PropertyInfo f in propertyInfos)
             {
+                if (f.GetValue(it) == null)
+                    continue;
                 if (f.GetValue(it).ToString().ToLower().Contains(SearchQuery.ToLower()))
                     return true;
             }
@@ -109,6 +123,8 @@ public class ClientsViewModel : ViewModelBase, IDisposable
 
     public void EditClientButton()
     {
+        if (CurrentItem == null)
+            return;
         var view = new ClientInfoCard(InfoCardEnum.Edit);
         var vm = new ClientInfoCardViewModel(UpdateItems, CurrentItem);
         view.DataContext = vm;
@@ -117,6 +133,8 @@ public class ClientsViewModel : ViewModelBase, IDisposable
 
     public void OpenCardClientButton()
     {
+        if (CurrentItem == null)
+            return;
         var view = new ClientInfoCard(InfoCardEnum.Info);
         var vm = new ClientInfoCardViewModel(UpdateItems, CurrentItem);
         view.DataContext = vm;
@@ -147,47 +165,31 @@ public class ClientsViewModel : ViewModelBase, IDisposable
             }
         }
     }
-
-    private int _indexTake = 0;
-    
-    private int IndexTake
-    {
-        get => _indexTake;
-        set
-        {
-            _indexTake = value;
-            
-            if (_indexTake > _itemsFilter.Count - 10)
-            {
-                _indexTake = _itemsFilter.Count - 10;
-            }
-            
-            if (_indexTake < 0)
-            {
-                _indexTake = 0;
-            } 
-        }
-    }
     
     public void TakeItems(TakeItemsEnum takeItems)
     {
         switch (takeItems)
         {
             case TakeItemsEnum.FirstItems:
-                IndexTake = 0;
+                CurrentPage = 1;
                 break;
             case TakeItemsEnum.LastItems:
-                IndexTake = _itemsFilter.Count - 10;
+                CurrentPage = TotalPages;
                 break;
             case TakeItemsEnum.NextItems:
-                IndexTake += 10;
+                if (CurrentPage < TotalPages)
+                    CurrentPage += 1;
                 break;
             case TakeItemsEnum.PreviousItems:
-                IndexTake -= 10;
+                if (CurrentPage > 1)
+                    CurrentPage -= 1;
                 break;
         }
+        
+        this.RaisePropertyChanged("CurrentPage");
+        this.RaisePropertyChanged("TotalPages");
 
-        ItemsOnDataGrid = new ObservableCollection<Client>(_itemsFilter.GetRange(IndexTake, _itemsFilter.Count > 10 ? 10 : _itemsFilter.Count));
+        ItemsOnDataGrid = new ObservableCollection<Client>(_itemsFilter.Skip((CurrentPage - 1) * 10).Take(10));
     }
     
     public void Dispose()

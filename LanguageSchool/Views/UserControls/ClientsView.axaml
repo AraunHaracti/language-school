@@ -14,8 +14,6 @@
                         <Button x:Name="AddClient" Content="Добавить" Command="{Binding AddClientButton}" Classes="Action"/>
                         <Button x:Name="EditClient" Content="Изменить" Command="{Binding EditClientButton}" Classes="Action"/>
                         <Button x:Name="OpenCardClient" Content="Информация" Command="{Binding OpenCardClientButton}" Classes="Action"/>
-                        <ComboBox x:Name="LanguageComboBox"/>
-                        <ComboBox x:Name="LevelLanguageComboBox"/>
                 </StackPanel>
         
                 <DataGrid x:Name="ItemDataGrid" 
@@ -37,6 +35,11 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="15">
                         <Button x:Name="First" Content="&lt;&lt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.FirstItems}" Margin="5"/>
                         <Button x:Name="Previous" Content="&lt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.PreviousItems}" Margin="5"/>
+                        <TextBlock VerticalAlignment="Center">
+                                <Run Text="{Binding CurrentPage}" />
+                                <Run Text="/"/>
+                                <Run Text="{Binding TotalPages}" />
+                        </TextBlock>
                         <Button x:Name="Next" Content="&gt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.NextItems}" Margin="5"/>
                         <Button x:Name="Last" Content="&gt;&gt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.LastItems}" Margin="5"/>
                 </StackPanel>

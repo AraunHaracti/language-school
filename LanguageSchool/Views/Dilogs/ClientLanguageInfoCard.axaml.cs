@@ -27,7 +27,7 @@ public partial class ClientLanguageInfoCard : Window
 
     private void Languages_OnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
-        if (DataContext == null)
+        if (DataContext == null || e.Property.Name != "SelectedIndex")
             return;
         var dataContext = DataContext as ViewModels.Dialogs.ClientLanguageInfoCardViewModel;
         dataContext.LanguagesComboBoxChanged();

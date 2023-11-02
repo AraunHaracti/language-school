@@ -4,28 +4,45 @@ using System.Linq;
 using System.Reflection;
 using LanguageSchool.Models;
 using MySql.Data.MySqlClient;
+using ReactiveUI;
 
 namespace LanguageSchool.ViewModels.Dialogs;
 
-public class ClientLanguageInfoCardViewModel
+public class ClientLanguageInfoCardViewModel : ViewModelBase
 {
     private bool _isEdit;
     
     private Action _action;
 
-    private int _languagesNameIndex;
+    private int _languagesNameIndex = 0;
     
-    public int LanguagesNameIndex => _languagesNameIndex;
+    public int LanguagesNameIndex
+    {
+        get => _languagesNameIndex;
+        set
+        {
+            _languagesNameIndex = value;
+            this.RaisePropertyChanged("LanguagesNameIndex");
+        }
+    }
+
+    private int _proficiencyLevelsNameIndex = 0;
     
-    private int _proficiencyLevelsNameIndex;
-    
-    public int ProficiencyLevelsNameIndex => _proficiencyLevelsNameIndex;
-    
-    private List<string> _languagesName;
+    public int ProficiencyLevelsNameIndex
+    {
+        get => _proficiencyLevelsNameIndex;
+        set
+        {
+            _proficiencyLevelsNameIndex = value;
+            this.RaisePropertyChanged("ProficiencyLevelsNameIndex");
+        } 
+    }
+
+    private List<string> _languagesName = new();
     
     public List<string> LanguagesName => _languagesName;
 
-    private List<string> _proficiencyLevelsName;
+    private List<string> _proficiencyLevelsName = new();
 
     public List<string> ProficiencyLevelsName => _proficiencyLevelsName;
     
@@ -86,12 +103,16 @@ public class ClientLanguageInfoCardViewModel
 
     public void LanguagesComboBoxChanged()
     {
+        _proficiencyLevelsName = new List<string>();
         var language = _languages.Where(it => it.Name == LanguagesName[LanguagesNameIndex]).ToList()[0];
         
         foreach (var item in _proficiencyLevels.Where(it => it.LanguageId == language.Id))
         {
             ProficiencyLevelsName.Add(item.Name);
         }
+        
+        this.RaisePropertyChanged("LanguagesName");
+        this.RaisePropertyChanged("ProficiencyLevelsName");
     }
     
     public ClientLanguageInfoCardViewModel(Action action, Client client) : this()
@@ -128,7 +149,7 @@ public class ClientLanguageInfoCardViewModel
 
     private void AddClientLanguage()
     {
-        string sql = $"insert into client_language (client_id, profency_level_id, last_experience, needs) values (" +
+        string sql = $"insert into client_language (client_id, proficiency_level_id, last_experience, needs) values (" +
                      $"{_client.Id}, " +
                      $"{_proficiencyLevels.
                          Where(it => 
@@ -149,7 +170,7 @@ public class ClientLanguageInfoCardViewModel
     public void EditClientLanguage()
     {
         string sql = $"update client_language set " +
-                     $"profency_level_id = {_proficiencyLevels.
+                     $"proficiency_level_id = {_proficiencyLevels.
                          Where(it =>
                              it.LanguageId == _languages.
                                  Where(it =>
