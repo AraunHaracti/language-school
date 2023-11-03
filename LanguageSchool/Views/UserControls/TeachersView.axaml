@@ -14,8 +14,6 @@
                         <Button x:Name="AddClient" Content="Добавить" Command="{Binding AddTeacherButton}" Classes="Action"/>
                         <Button x:Name="EditClient" Content="Изменить" Command="{Binding EditTeacherButton}" Classes="Action"/>
                         <Button x:Name="OpenCardClient" Content="Информация" Command="{Binding OpenCardTeacherButton}" Classes="Action"/>
-                        <ComboBox x:Name="LanguageComboBox"/>
-                        <ComboBox x:Name="LevelLanguageComboBox"/>
                 </StackPanel>
         
                 <DataGrid x:Name="ItemDataGrid" 
@@ -23,6 +21,7 @@
                           AutoGenerateColumns="False" 
                           IsReadOnly="True" 
                           ItemsSource="{Binding ItemsOnDataGrid}"
+                          SelectedItem="{Binding CurrentItem}"
                           Height="400">
                         <DataGrid.Columns>
                                 <DataGridTextColumn Header="Имя" Binding="{Binding Name}"/>

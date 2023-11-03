@@ -8,6 +8,12 @@ public partial class Course
 
     public int ProficiencyLevelId { get; set; }
 
+    public int LanguageId { get; set; }
+    
+    public string ProficiencyLevelName { get; set; }
+    
+    public string LanguageName { get; set; }
+    
     public string? Name { get; set; }
 
     public string Info { get; set; } = null!;

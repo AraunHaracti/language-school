@@ -1,54 +1,48 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using LanguageSchool.Models;
-using LanguageSchool.Utils;
 using LanguageSchool.Views.Dilogs;
 using MySql.Data.MySqlClient;
 using ReactiveUI;
 
-
 namespace LanguageSchool.ViewModels.Dialogs;
 
-public class ClientInfoCardViewModel : ViewModelBase
+public class TeacherInfoCardViewModel : ViewModelBase
 {
     private readonly Window _parentWindow;
     private bool _isEdit;
     
     private Action _action;
     
-    private List<ClientLanguage> _itemsFromDatabase;
+    private List<TeacherLanguage> _itemsFromDatabase;
     
     private string _sql = $"select " +
-                          $"client_language.id as id, " +
-                          $"client_language.client_id as client_id, " +
-                          $"client_language.proficiency_level_id as proficiency_level_id, " +
+                          $"teacher_language.id as id, " +
+                          $"teacher_language.teacher as teacher_id, " +
+                          $"teacher_language.proficiency_level_id as proficiency_level_id, " +
                           $"proficiency_level.name as proficiency_level_name, " +
                           $"proficiency_level.language_id as language_id, " +
-                          $"language.name as language_name, " +
-                          $"client_language.last_experience as last_experience, " +
-                          $"client_language.needs as needs " +
-                          $"from client_language " +
+                          $"language.name as language_name " +
+                          $"from teacher_language " +
                           $"join proficiency_level " +
-                          $"on client_language.proficiency_level_id = proficiency_level.id " +
+                          $"on teacher_language.proficiency_level_id = proficiency_level.id " +
                           $"join language " +
                           $"on proficiency_level.language_id = language.id";
+    
+    private Teacher _person;
 
+    private ObservableCollection<TeacherLanguage> _personLanguage;
     
-    private Client _person;
-
-    private ObservableCollection<ClientLanguage> _personLanguage;
+    public TeacherLanguage CurrentItem { get; set; }
     
-    public ClientLanguage CurrentItem { get; set; }
+    public Teacher Person => _person;
     
-    public Client Person => _person;
-    
-    public ObservableCollection<ClientLanguage> PersonLanguage
+    public ObservableCollection<TeacherLanguage> PersonLanguage
     {
         get => _personLanguage;
         set
@@ -57,8 +51,8 @@ public class ClientInfoCardViewModel : ViewModelBase
             this.RaisePropertyChanged("PersonLanguage");
         }
     }
-    
-    public ClientInfoCardViewModel()
+
+    public TeacherInfoCardViewModel()
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -69,12 +63,12 @@ public class ClientInfoCardViewModel : ViewModelBase
     public void UpdateItems()
     {
         GetDataFromDatabase();
-        PersonLanguage = new ObservableCollection<ClientLanguage>(_itemsFromDatabase.Where(it => it.ClientId == _person.Id));
+        PersonLanguage = new ObservableCollection<TeacherLanguage>(_itemsFromDatabase.Where(it => it.TeacherId == _person.Id));
     }
     
     private void GetDataFromDatabase()
     {
-        _itemsFromDatabase = new List<ClientLanguage>();
+        _itemsFromDatabase = new List<TeacherLanguage>();
 
         using (Database db = new Database())
         {
@@ -82,83 +76,77 @@ public class ClientInfoCardViewModel : ViewModelBase
             
             while (reader.Read() && reader.HasRows)
             {
-                var currentItem = new ClientLanguage()
+                var currentItem = new TeacherLanguage()
                 {
                     Id = reader.GetInt32("id"),
-                    ClientId = reader.GetInt32("client_id"),
-                    ProficiencyLevelId = reader.GetInt32("proficiency_level_id"), 
+                    TeacherId = reader.GetInt32("teacher_id"),
+                    ProficiencyLevelId = reader.GetInt32("proficiency_level_id"),
                     LanguageId = reader.GetInt32("language_id"),
                     ProficiencyLevelName = reader.GetString("proficiency_level_name"),
                     LanguageName = reader.GetString("language_name"),
                 };
-                currentItem.LastExperience = (reader.IsDBNull("last_experience") ? null : reader.GetString("last_experience"));
-                currentItem.Needs = (reader.IsDBNull("needs") ? null : reader.GetString("needs"));
 
                 _itemsFromDatabase.Add(currentItem);
             }
         }
     }
     
-    public ClientInfoCardViewModel(Action action) : this()
+    public TeacherInfoCardViewModel(Action action) : this()
     {
         _action = action;
-        _person = new Client();
+        _person = new Teacher();
 
         _isEdit = false;
     }
     
-    public ClientInfoCardViewModel(Action action, Client client) : this()
+    public TeacherInfoCardViewModel(Action action, Teacher teacher) : this()
     {
         _action = action;
-        _person = client;
+        _person = teacher;
 
         _isEdit = true;
         
         UpdateItems();
     }
-
-    public bool ActionClient()
+    
+    public bool ActionTeacher()
     {
         if (Person.Name == null || Person.Name == "" || Person.Surname == null || Person.Surname == "")
             return false;
         
         if (_isEdit)
         {
-            EditClient();
+            EditTeacher();
         }
         else
         {
-            AddClient();
+            AddTeacher();
         }
         
         _action.Invoke();
 
         return true;
     }
-
-    private void AddClient()
+    
+    private void AddTeacher()
     {
-        string sql = $"insert into client (name, surname, birthday, phone, email) values (" +
+        string sql = $"insert into teacher (name, surname, birthday) values (" +
                      $"'{Person.Name}', " +
                      $"'{Person.Surname}', " +
-                     $"'{Person.Birthday.ToString("yyyy-MM-dd")}', " +
-                     $"'{Person.Phone}', " +
-                     $"'{Person.Email}')";
+                     $"'{Person.Birthday.ToString("yyyy-MM-dd")}')";
         
         using (Database db = new Database())
         {
             db.SetData(sql);
         }
     }
-
-    public void EditClient()
+    
+    public void EditTeacher()
     {
-        string sql = $"update client set " +
+        string sql = $"update teacher set " +
                      $"name = '{Person.Name}', " +
                      $"surname = '{Person.Surname}', " +
-                     $"birthday = '{Person.Birthday.ToString("yyyy-MM-dd")}', " +
-                     $"phone = '{Person.Phone}', " +
-                     $"email = '{Person.Email}' " +
+                     $"birthday = '{Person.Birthday.ToString("yyyy-MM-dd")}' " +
                      $"where id = {Person.Id}";
         
         using (Database db = new Database())
@@ -166,23 +154,23 @@ public class ClientInfoCardViewModel : ViewModelBase
             db.SetData(sql);
         }
     }
-
+    
     public void AddLanguageButton()
     {
-        var view = new ClientLanguageInfoCard();
-        var vm = new ClientLanguageInfoCardViewModel(UpdateItems, Person);
+        var view = new TeacherLanguageInfoCard();
+        var vm = new TeacherLanguageInfoCardViewModel(UpdateItems, Person);
         view.DataContext = vm;
         view.ShowDialog(_parentWindow);
     }
-
+    
     public void EditLanguageButton()
     {
-        var view = new ClientLanguageInfoCard();
-        var vm = new ClientLanguageInfoCardViewModel(UpdateItems, Person, CurrentItem);
+        var view = new TeacherLanguageInfoCard();
+        var vm = new TeacherLanguageInfoCardViewModel(UpdateItems, Person, CurrentItem);
         view.DataContext = vm;
         view.ShowDialog(_parentWindow);
     }
-
+    
     public void DeleteLanguageButton()
     {
         

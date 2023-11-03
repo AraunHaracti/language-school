@@ -1,0 +1,66 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:LanguageSchool.ViewModels.Dialogs"
+        xmlns:utils="clr-namespace:LanguageSchool.Utils"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        CanResize="False"
+        SizeToContent="WidthAndHeight"
+        x:DataType="vm:GroupInfoCardViewModel"
+        x:Class="LanguageSchool.Views.Dilogs.GroupInfoCard"
+        Title="GroupInfoCard">
+    <StackPanel>
+                <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Название" Width="120" Margin="10"/>
+                                <TextBox Text="{Binding Item.Name}" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Учитель" Width="120" Margin="10"/>
+                                <ComboBox x:Name="TeacherComboBox" ItemsSource="{Binding TeachersName}" SelectedIndex="{Binding TeacherNameIndex}" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Курс" Width="120" Margin="10"/>
+                                <ComboBox x:Name="CourseComboBox" ItemsSource="{Binding CoursesName}" SelectedIndex="{Binding CourseNameIndex}" Width="300" Margin="10"/>
+                        </StackPanel>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" x:Name="ClientMenu">
+                        <TextBox x:Name="SearchTextBox" Text="{Binding SearchQuery, Mode=TwoWay}" Classes="Search"/>
+                        <Button x:Name="AddLanguage" Content="Добавить" Command="{Binding AddClientButton}"/>
+                        <Button x:Name="DeleteLanguage" Content="Удалить" Command="{Binding DeleteClientButton}"/>
+                </StackPanel>
+                
+                    <StackPanel x:Name="ClientDataGrid">
+                        <DataGrid SelectedItem="{Binding CurrentItem}"
+                                  ItemsSource="{Binding GroupClients}"
+                                  Width="420"
+                                  Height="200">
+                                <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Имя" Binding="{Binding Name}"/>
+                                        <DataGridTextColumn Header="Фамилия" Binding="{Binding Surname}"/>
+                                        <DataGridTextColumn Header="День рождения" Binding="{Binding Birthday, StringFormat=d}"/>
+                                </DataGrid.Columns>
+                        </DataGrid>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="15">
+                                    <Button x:Name="First" Content="&lt;&lt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.FirstItems}" Margin="5"/>
+                                    <Button x:Name="Previous" Content="&lt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.PreviousItems}" Margin="5"/>
+                                    <TextBlock VerticalAlignment="Center">
+                                            <Run Text="{Binding CurrentPage}" />
+                                            <Run Text="/"/>
+                                            <Run Text="{Binding TotalPages}" />
+                                    </TextBlock>
+                                    <Button x:Name="Next" Content="&gt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.NextItems}" Margin="5"/>
+                                    <Button x:Name="Last" Content="&gt;&gt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.LastItems}" Margin="5"/>
+                            </StackPanel>
+                            
+                    </StackPanel>
+                            
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+                        <Button x:Name="Ok" Content="Применить" Click="Ok_OnClick" HorizontalContentAlignment="Center" Width="100"/>
+                        <Button x:Name="Exit" Content="Отмена" Click="Exit_OnClick" HorizontalContentAlignment="Center" Width="100"/>
+                </StackPanel>
+        </StackPanel>
+</Window>

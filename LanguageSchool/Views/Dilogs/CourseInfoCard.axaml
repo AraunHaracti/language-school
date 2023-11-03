@@ -1,0 +1,43 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:LanguageSchool.ViewModels.Dialogs"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        CanResize="False"
+        SizeToContent="WidthAndHeight"
+        x:DataType="vm:CourseInfoCardViewModel"
+        x:Class="LanguageSchool.Views.Dilogs.CourseInfoCard"
+        Title="CourseInfoCard">
+    
+        <StackPanel>
+                <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Название" Width="120" Margin="10"/>
+                                <TextBox Text="{Binding Item.Name, Mode=TwoWay}" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Описание" Width="120" Margin="10"/>
+                                <TextBox Text="{Binding Item.Info}" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Язык" Width="120" Margin="10"/>
+                                <ComboBox x:Name="LanguagesName" ItemsSource="{Binding LanguagesName}" SelectedIndex="{Binding LanguagesNameIndex, Mode=TwoWay}" PropertyChanged="Languages_OnPropertyChanged" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Уровень" Width="120" Margin="10"/>
+                                <ComboBox x:Name="ProficiencyLevelsName" ItemsSource="{Binding ProficiencyLevelsName, Mode=TwoWay}" SelectedIndex="{Binding ProficiencyLevelsNameIndex, Mode=TwoWay}" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Цена" Width="120" Margin="10"/>
+                                <TextBox Text="{Binding Item.Price}" Width="300" Margin="10"/>
+                        </StackPanel>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+                        <Button x:Name="Ok" Content="Применить" Click="Ok_OnClick" HorizontalContentAlignment="Center" Width="100"/>
+                        <Button x:Name="Exit" Content="Отмена" Click="Exit_OnClick" HorizontalContentAlignment="Center" Width="100"/>
+                </StackPanel>
+        </StackPanel>
+        
+</Window>
