@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace LanguageSchool.Models;
+
 public partial class Teacher
 {
     public int Id { get; set; }
@@ -10,5 +10,9 @@ public partial class Teacher
 
     public string Surname { get; set; } = null!;
 
-    public DateTime Birthday { get; set; } = DateTime.Today;
+    public DateTimeOffset Birthday { get; set; } = DateTimeOffset.Now;
+    
+    public string? Phone { get; set; }
+
+    public string? Email { get; set; }
 }

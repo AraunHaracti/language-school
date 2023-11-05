@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace LanguageSchool.Models;
 
-namespace LanguageSchool.Models;
 public partial class ClientInGroup
 {
     public int Id { get; set; }

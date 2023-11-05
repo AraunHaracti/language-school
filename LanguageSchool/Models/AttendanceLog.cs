@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace LanguageSchool.Models;
+﻿namespace LanguageSchool.Models;
 
 public partial class AttendanceLog
 {

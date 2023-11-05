@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace LanguageSchool.Models;
 
-namespace LanguageSchool.Models;
 public partial class Group
 {
     public int Id { get; set; }
@@ -14,5 +12,5 @@ public partial class Group
     
     public string CourseName { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
 }
