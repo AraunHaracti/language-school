@@ -6,35 +6,68 @@
              xmlns:utils="clr-namespace:LanguageSchool.Utils"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="vm:TeachersViewModel"
+             Background="Beige"
              x:Class="LanguageSchool.Views.UserControls.TeachersView">
-    
-    <StackPanel>
+        
+        <Design.DataContext>
+                <vm:TeachersViewModel/>
+        </Design.DataContext>
+        
+        <UserControl.Styles>
+                <Style Selector="TextBox.Search">
+                        <Setter Property="Width" Value="300"/>
+                        <Setter Property="Margin" Value="5"/>
+                </Style>
+                <Style Selector="Button.Action">
+                        <Setter Property="Width" Value="150"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+                <Style Selector="Button.Pagination">
+                        <Setter Property="Width" Value="40"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+                <Style Selector="TextBlock.Pagination">
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+        </UserControl.Styles>
+        
+        <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="5">
                         <TextBox x:Name="SearchTextBox" Text="{Binding SearchQuery, Mode=TwoWay}" Classes="Search"/>
-                        <Button x:Name="AddClient" Content="Добавить" Command="{Binding AddTeacherButton}" Classes="Action"/>
-                        <Button x:Name="EditClient" Content="Изменить" Command="{Binding EditTeacherButton}" Classes="Action"/>
-                        <Button x:Name="OpenCardClient" Content="Информация" Command="{Binding OpenCardTeacherButton}" Classes="Action"/>
+                        <Button x:Name="AddClient" Content="Добавить" Command="{Binding AddItemButton}" Classes="Action"/>
+                        <Button x:Name="EditClient" Content="Изменить" Command="{Binding EditItemButton}" Classes="Action"/>
+                        <Button x:Name="OpenCardClient" Content="Информация" Command="{Binding OpenCardItemButton}" Classes="Action"/>
                 </StackPanel>
-        
+
                 <DataGrid x:Name="ItemDataGrid" 
                           x:CompileBindings="False" 
                           AutoGenerateColumns="False" 
                           IsReadOnly="True" 
                           ItemsSource="{Binding ItemsOnDataGrid}"
                           SelectedItem="{Binding CurrentItem}"
-                          Height="400">
+                          Height="600">
                         <DataGrid.Columns>
-                                <DataGridTextColumn Header="Имя" Binding="{Binding Name}"/>
-                                <DataGridTextColumn Header="Фамилия" Binding="{Binding Surname}"/>
-                                <DataGridTextColumn Header="День рождения" Binding="{Binding Birthday}"/>
+                                <DataGridTextColumn Header="Имя" Binding="{Binding Name}" Width="200"/>
+                                <DataGridTextColumn Header="Фамилия" Binding="{Binding Surname}" Width="200"/>
+                                <DataGridTextColumn Header="День рождения" Binding="{Binding Birthday, StringFormat=d}" Width="200"/>
+                                <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="200"/>
+                                <DataGridTextColumn Header="Почта" Binding="{Binding Email}" Width="200"/>
                         </DataGrid.Columns>
                 </DataGrid>        
                 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="15">
-                        <Button x:Name="First" Content="&lt;&lt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.FirstItems}" Margin="5"/>
-                        <Button x:Name="Previous" Content="&lt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.PreviousItems}" Margin="5"/>
-                        <Button x:Name="Next" Content="&gt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.NextItems}" Margin="5"/>
-                        <Button x:Name="Last" Content="&gt;&gt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.LastItems}" Margin="5"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+                        <Button Content="&lt;&lt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.FirstItems}" Classes="Pagination"/>
+                        <Button Content="&lt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.PreviousItems}" Classes="Pagination"/>
+                        <TextBlock Classes="Pagination">
+                                <Run Text="{Binding CurrentPage}" />
+                                <Run Text="/"/>
+                                <Run Text="{Binding TotalPages}" />
+                        </TextBlock>
+                        <Button Content="&gt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.NextItems}" Classes="Pagination"/>
+                        <Button Content="&gt;&gt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.LastItems}" Classes="Pagination"/>
                 </StackPanel>
         </StackPanel>
 </UserControl>
