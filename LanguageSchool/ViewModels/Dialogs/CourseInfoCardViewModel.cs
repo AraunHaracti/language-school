@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using LanguageSchool.Models;
+using LanguageSchool.Utils;
 using MySql.Data.MySqlClient;
 using ReactiveUI;
 

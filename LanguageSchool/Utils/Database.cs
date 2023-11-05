@@ -1,29 +1,19 @@
 using System;
 using MySql.Data.MySqlClient;
 
-namespace LanguageSchool;
+namespace LanguageSchool.Utils;
 
 public class Database : IDisposable
 {
     private MySqlConnection? _connection;
-    private static MySqlConnectionStringBuilder? _stringBuilder;
 
-    public static MySqlConnectionStringBuilder? ConnectionStringBuilder
-    {
-        get => _stringBuilder;
-        set => _stringBuilder = value;
-    }
-    
+    public static MySqlConnectionStringBuilder? ConnectionStringBuilder { get; set; }
+
     public Database()
     {
-        if (_stringBuilder == null)
-        {
-            throw new Exception("Connection string is empty");
-        }
-
         Open();
     }
-    
+
     public void SetData(string sql)
     {
         var command = new MySqlCommand(sql, _connection);
@@ -40,7 +30,9 @@ public class Database : IDisposable
 
     private void Open()
     {
-        _connection = new MySqlConnection(_stringBuilder.ConnectionString);
+        if (ConnectionStringBuilder == null)
+            throw new Exception("Connection string is empty");
+        _connection = new MySqlConnection(ConnectionStringBuilder.ConnectionString);
         _connection.Open();
     }
     
@@ -52,5 +44,10 @@ public class Database : IDisposable
     public void Dispose()
     {
         Close();
+    }
+    
+    ~Database()
+    {
+        Dispose();
     }
 }
