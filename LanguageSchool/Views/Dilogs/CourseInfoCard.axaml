@@ -10,6 +10,10 @@
         x:Class="LanguageSchool.Views.Dilogs.CourseInfoCard"
         Title="CourseInfoCard">
     
+        <Design.DataContext>
+                <vm:CourseInfoCardViewModel/>
+        </Design.DataContext>
+        
         <StackPanel>
                 <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
@@ -26,7 +30,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Уровень" Width="120" Margin="10"/>
-                                <ComboBox x:Name="ProficiencyLevelsName" ItemsSource="{Binding ProficiencyLevelsName, Mode=TwoWay}" SelectedIndex="{Binding ProficiencyLevelsNameIndex, Mode=TwoWay}" Width="300" Margin="10"/>
+                                <ComboBox x:Name="ProficiencyLevelsName" ItemsSource="{Binding LanguageLevelsName, Mode=TwoWay}" SelectedIndex="{Binding LanguageLevelsNameIndex, Mode=TwoWay}" Width="300" Margin="10"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Цена" Width="120" Margin="10"/>

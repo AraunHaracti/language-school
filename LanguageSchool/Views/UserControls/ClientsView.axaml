@@ -45,14 +45,17 @@
                 <DataGrid x:Name="ItemDataGrid" 
                           x:CompileBindings="False" 
                           AutoGenerateColumns="False" 
+                          CanUserSortColumns="False"
+                          CanUserResizeColumns="True"
+                          MinColumnWidth="100"
                           IsReadOnly="True" 
                           ItemsSource="{Binding ItemsOnDataGrid}"
                           SelectedItem="{Binding CurrentItem}"
                           Height="600">
                         <DataGrid.Columns>
-                                <DataGridTextColumn Header="Имя" Binding="{Binding Name}" Width="200"/>
-                                <DataGridTextColumn Header="Фамилия" Binding="{Binding Surname}" Width="200"/>
-                                <DataGridTextColumn Header="День рождения" Binding="{Binding Birthday, StringFormat=d}" Width="200"/>
+                                <DataGridTextColumn Header="Имя" Binding="{Binding Name}" Width="250"/>
+                                <DataGridTextColumn Header="Фамилия" Binding="{Binding Surname}" Width="250"/>
+                                <DataGridTextColumn Header="День рождения" Binding="{Binding Birthday, StringFormat=d}" Width="150"/>
                                 <DataGridTextColumn Header="Телефон" Binding="{Binding Phone}" Width="200"/>
                                 <DataGridTextColumn Header="Почта" Binding="{Binding Email}" Width="200"/>
                         </DataGrid.Columns>

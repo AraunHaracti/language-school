@@ -32,15 +32,15 @@ public class CourseInfoCardViewModel : ViewModelBase
         }
     }
 
-    private int _proficiencyLevelsNameIndex = 0;
+    private int _languageLevelsNameIndex = 0;
     
-    public int ProficiencyLevelsNameIndex
+    public int LanguageLevelsNameIndex
     {
-        get => _proficiencyLevelsNameIndex;
+        get => _languageLevelsNameIndex;
         set
         {
-            _proficiencyLevelsNameIndex = value;
-            this.RaisePropertyChanged("ProficiencyLevelsNameIndex");
+            _languageLevelsNameIndex = value;
+            this.RaisePropertyChanged("LanguageLevelsNameIndex");
         } 
     }
 
@@ -48,13 +48,13 @@ public class CourseInfoCardViewModel : ViewModelBase
     
     public List<string> LanguagesName => _languagesName;
 
-    private List<string> _proficiencyLevelsName = new();
+    private List<string> _languageLevelsName = new();
 
-    public List<string> ProficiencyLevelsName => _proficiencyLevelsName;
+    public List<string> LanguageLevelsName => _languageLevelsName;
     
     private List<Language> _languages = new();
 
-    private List<ProficiencyLevel> _proficiencyLevels = new();
+    private List<LanguageLevel> _languageLevels = new();
     
     private Course _item;
     
@@ -93,19 +93,19 @@ public class CourseInfoCardViewModel : ViewModelBase
         
         using (Database db = new Database())
         {
-            MySqlDataReader reader = db.GetData("select * from proficiency_level");
+            MySqlDataReader reader = db.GetData("select * from language_level");
             
             while (reader.Read() && reader.HasRows)
             {
-                var currentItem = new ProficiencyLevel();
+                var currentItem = new LanguageLevel();
 
-                PropertyInfo[] propertyInfos = typeof(ProficiencyLevel).GetProperties();
+                PropertyInfo[] propertyInfos = typeof(LanguageLevel).GetProperties();
                 for (int i = 0; i < propertyInfos.Length; i++)
                 {
                     propertyInfos[i].SetValue(currentItem, reader.GetValue(i));
                 }
 
-                _proficiencyLevels.Add(currentItem);
+                _languageLevels.Add(currentItem);
             }
         }
     }
@@ -147,12 +147,12 @@ public class CourseInfoCardViewModel : ViewModelBase
 
     public void LanguagesComboBoxChanged()
     {
-        _proficiencyLevelsName = new List<string>();
+        _languageLevelsName = new List<string>();
         var language = _languages.Where(it => it.Name == LanguagesName[LanguagesNameIndex]).ToList()[0];
         
-        foreach (var item in _proficiencyLevels.Where(it => it.LanguageId == language.Id))
+        foreach (var item in _languageLevels.Where(it => it.LanguageId == language.Id))
         {
-            ProficiencyLevelsName.Add(item.Name);
+            LanguageLevelsName.Add(item.Name);
         }
         
         this.RaisePropertyChanged("LanguagesName");
@@ -161,17 +161,17 @@ public class CourseInfoCardViewModel : ViewModelBase
     
     private void AddClient()
     {
-        string sql = $"insert into curse (name, info, price, proficiency_level_id) values (" +
+        string sql = $"insert into course (name, info, price, language_level_id) values (" +
                      $"'{Item.Name}', " +
                      $"'{Item.Info}', " +
                      $"'{Item.Price.ToString().Replace(",", ".")}', " +
-                     $"{_proficiencyLevels.
+                     $"{_languageLevels.
                          Where(it => 
                              it.LanguageId == _languages.
                                  Where(it => 
                                      it.Name == LanguagesName[LanguagesNameIndex]).ToList()[0].Id).
                          Where(it => 
-                             it.Name == ProficiencyLevelsName[ProficiencyLevelsNameIndex]).ToList()[0].Id})";
+                             it.Name == LanguageLevelsName[LanguageLevelsNameIndex]).ToList()[0].Id})";
         
         using (Database db = new Database())
         {
@@ -181,17 +181,17 @@ public class CourseInfoCardViewModel : ViewModelBase
     
     public void EditClient()
     {
-        string sql = $"update curse set " +
+        string sql = $"update course set " +
                      $"name = '{Item.Name}', " +
                      $"info = '{Item.Info}', " +
                      $"price = '{Item.Price.ToString().Replace(",", ".")}', " +
-                     $"proficiency_level_id = {_proficiencyLevels.
+                     $"language_level_id = {_languageLevels.
                          Where(it =>
                              it.LanguageId == _languages.
                                  Where(it =>
                                      it.Name == LanguagesName[LanguagesNameIndex]).ToList()[0].Id).
                          Where(it =>
-                             it.Name == ProficiencyLevelsName[ProficiencyLevelsNameIndex]).ToList()[0].Id} " +
+                             it.Name == LanguageLevelsName[LanguageLevelsNameIndex]).ToList()[0].Id} " +
                      $"where id = {Item.Id}";
         
         using (Database db = new Database())

@@ -24,20 +24,20 @@ public class ClientInfoCardViewModel : ViewModelBase
     
     private List<ClientLanguage> _itemsFromDatabase;
     
-    private string _sql = $"select " +
-                          $"client_language.id as id, " +
-                          $"client_language.client_id as client_id, " +
-                          $"client_language.language_level_id as language_level_id, " +
-                          $"language_level.name as language_level_name, " +
-                          $"language_level.language_id as language_id, " +
-                          $"language.name as language_name, " +
-                          $"client_language.last_experience as last_experience, " +
-                          $"client_language.needs as needs " +
-                          $"from client_language " +
-                          $"join language_level " +
-                          $"on client_language.language_level_id = language_level.id " +
-                          $"join language " +
-                          $"on language_level.language_id = language.id";
+    private readonly string _sql = "select " +
+                                   "`client_language`.id as `id`, " +
+                                   "`client_language`.client_id as `client_id`, " +
+                                   "`client_language`.language_level_id as `language_level_id`, " +
+                                   "`language_level`.name as `language_level_name`, " +
+                                   "`language_level`.language_id as `language_id`, " +
+                                   "`language`.name as `language_name`, " +
+                                   "`client_language`.last_experience as `last_experience`, " +
+                                   "`client_language`.needs as `needs` " +
+                                   "from `client_language` " +
+                                   "join `language_level` " +
+                                   "on `client_language`.language_level_id = `language_level`.id " +
+                                   "join `language` " +
+                                   "on `language_level`.language_id = `language`.id";
 
     
     private Client _person;
@@ -176,7 +176,7 @@ public class ClientInfoCardViewModel : ViewModelBase
         }
     }
 
-    public void AddLanguageButton()
+    public void AddItemButton()
     {
         var view = new ClientLanguageInfoCard();
         var vm = new ClientLanguageInfoCardViewModel(UpdateItems, Person);
@@ -184,7 +184,7 @@ public class ClientInfoCardViewModel : ViewModelBase
         view.ShowDialog(_parentWindow);
     }
 
-    public void EditLanguageButton()
+    public void EditItemButton()
     {
         var view = new ClientLanguageInfoCard();
         var vm = new ClientLanguageInfoCardViewModel(UpdateItems, Person, CurrentItem);
@@ -192,8 +192,12 @@ public class ClientInfoCardViewModel : ViewModelBase
         view.ShowDialog(_parentWindow);
     }
 
-    public void DeleteLanguageButton()
+    public void DeleteItemButton()
     {
+        string sql = $"delete from client_language where client_language.id = {CurrentItem.Id}";
+
+        using Database db = new Database();
         
+        db.SetData(sql);
     }
 }

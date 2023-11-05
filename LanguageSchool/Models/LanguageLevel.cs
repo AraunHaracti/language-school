@@ -1,6 +1,6 @@
 ﻿namespace LanguageSchool.Models;
 
-public partial class ProficiencyLevel
+public partial class LanguageLevel
 {
     public int Id { get; set; }
 
