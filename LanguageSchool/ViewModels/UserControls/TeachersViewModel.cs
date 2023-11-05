@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -18,11 +17,16 @@ namespace LanguageSchool.ViewModels.UserControls;
 
 public class TeachersViewModel : ViewModelBase, IDisposable
 {
-    private readonly Window _parentWindow;
+    private readonly Window? _parentWindow;
     
     private List<Teacher> _itemsFromDatabase;
 
     private List<Teacher> _itemsFilter;
+
+    private readonly string _sql = "select * " +
+                                   "from `teacher`";
+    
+    private readonly int _countItems = 15;
     
     public int CurrentPage { get; set; } = 1;
 
@@ -30,15 +34,13 @@ public class TeachersViewModel : ViewModelBase, IDisposable
     {
         get
         {
-            int page = (int)Math.Ceiling(_itemsFilter.Count / (double)10);
+            int page = (int)Math.Ceiling(_itemsFilter.Count / (double) _countItems);
             return page == 0 ? 1 : page;
         }
     }
 
     public Teacher CurrentItem { get; set; }
-    
-    private string _sql = $"select * from teacher";
-    
+
     private ObservableCollection<Teacher> _itemsOnDataGrid;
     
     public ObservableCollection<Teacher> ItemsOnDataGrid
@@ -47,7 +49,7 @@ public class TeachersViewModel : ViewModelBase, IDisposable
         set
         {
             _itemsOnDataGrid = value;
-            this.RaisePropertyChanged("ItemsOnDataGrid");
+            this.RaisePropertyChanged();
         }
     }
 
@@ -58,27 +60,70 @@ public class TeachersViewModel : ViewModelBase, IDisposable
         set
         {
             _searchQuery = value;
-            this.RaisePropertyChanged("SearchQuery");
+            this.RaisePropertyChanged();
         }
     }
     
     public TeachersViewModel()
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             _parentWindow = desktop.MainWindow;
         }
         
-        UpdateItems();
+        GetAndUpdateItems();
         
         PropertyChanged += OnSearchQueryChanged;
     }
     
+    public void AddItemButton()
+    {
+        var view = new TeacherInfoCard(InfoCardEnum.Add);
+        var vm = new TeacherInfoCardViewModel(GetAndUpdateItems);
+        view.DataContext = vm;
+        view.ShowDialog(_parentWindow);
+    }
+
+    public void EditItemButton()
+    {
+        if (CurrentItem == null)
+            return;
+        var view = new TeacherInfoCard(InfoCardEnum.Edit);
+        var vm = new TeacherInfoCardViewModel(GetAndUpdateItems, CurrentItem);
+        view.DataContext = vm;
+        view.ShowDialog(_parentWindow);
+    }
+
+    public void OpenCardItemButton()
+    {
+        if (CurrentItem == null)
+            return;
+        var view = new TeacherInfoCard(InfoCardEnum.Info);
+        var vm = new TeacherInfoCardViewModel(CurrentItem);
+        view.DataContext = vm;
+        view.ShowDialog(_parentWindow);
+    }
+    
     private void OnSearchQueryChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName != nameof(SearchQuery)) return;
+        if (e.PropertyName != nameof(SearchQuery)) 
+            return;
+
+        UpdateItems();
+    }
+
+    private void GetAndUpdateItems()
+    {
+        GetDataFromDatabase();
+        UpdateItems();
+    }
+
+    private void UpdateItems()
+    {
         Search();
+        this.RaisePropertyChanged(nameof(TotalPages));
         TakeItems(TakeItemsEnum.FirstItems);
+        this.RaisePropertyChanged(nameof(CurrentPage));
     }
     
     private void Search()
@@ -90,75 +135,34 @@ public class TeachersViewModel : ViewModelBase, IDisposable
         }
 
         _itemsFilter = new(_itemsFromDatabase.Where(it =>
-        {
-            PropertyInfo[] propertyInfos = typeof(Teacher).GetProperties();
-            foreach (PropertyInfo f in propertyInfos)
-            {
-                if (f.GetValue(it) == null)
-                    continue;
-                if (f.GetValue(it).ToString().ToLower().Contains(SearchQuery.ToLower()))
-                    return true;
-            }
-
-            return false;
-        }));
-    }
-    
-    public void UpdateItems()
-    {
-        GetDataFromDatabase();
-        Search();
-        TakeItems(TakeItemsEnum.FirstItems);
-    }
-    
-    public void AddTeacherButton()
-    {
-        var view = new TeacherInfoCard(InfoCardEnum.Add);
-        var vm = new TeacherInfoCardViewModel(UpdateItems);
-        view.DataContext = vm;
-        view.ShowDialog(_parentWindow);
-    }
-
-    public void EditTeacherButton()
-    {
-        if (CurrentItem == null)
-            return;
-        var view = new TeacherInfoCard(InfoCardEnum.Edit);
-        var vm = new TeacherInfoCardViewModel(UpdateItems, CurrentItem);
-        view.DataContext = vm;
-        view.ShowDialog(_parentWindow);
-    }
-
-    public void OpenCardTeacherButton()
-    {
-        if (CurrentItem == null)
-            return;
-        var view = new TeacherInfoCard(InfoCardEnum.Info);
-        var vm = new TeacherInfoCardViewModel(UpdateItems, CurrentItem);
-        view.DataContext = vm;
-        view.ShowDialog(_parentWindow);
+            it.Name.Contains(SearchQuery) || 
+            it.Surname.Contains(SearchQuery) ||
+            it.Birthday.ToString().Contains(SearchQuery) ||
+            it.Phone!.Contains(SearchQuery) ||
+            it.Email!.Contains(SearchQuery)));
     }
 
     private void GetDataFromDatabase()
     {
         _itemsFromDatabase = new List<Teacher>();
 
-        using (Database db = new Database())
-        {
-            MySqlDataReader reader = db.GetData(_sql);
+        using Database db = new Database();
+        
+        MySqlDataReader reader = db.GetData(_sql);
             
-            while (reader.Read() && reader.HasRows)
+        while (reader.Read() && reader.HasRows)
+        {
+            var currentItem = new Teacher
             {
-                var currentItem = new Teacher()
-                {
-                    Id = reader.GetInt32("Id"),
-                    Name = reader.GetString("Name"),
-                    Surname = reader.GetString("Surname"),
-                    Birthday = reader.GetDateTime("Birthday"),
-                };
+                Id = reader.GetInt32("id"),
+                Name = reader.GetString("name"),
+                Surname = reader.GetString("surname"),
+                Birthday = reader.GetDateTime("birthday"),
+                Phone = reader.GetString("phone"),
+                Email = reader.GetString("email"),
+            };
 
-                _itemsFromDatabase.Add(currentItem);
-            }
+            _itemsFromDatabase.Add(currentItem);
         }
     }
     
@@ -166,6 +170,7 @@ public class TeachersViewModel : ViewModelBase, IDisposable
     {
         switch (takeItems)
         {
+            default:
             case TakeItemsEnum.FirstItems:
                 CurrentPage = 1;
                 break;
@@ -181,14 +186,9 @@ public class TeachersViewModel : ViewModelBase, IDisposable
                     CurrentPage -= 1;
                 break;
         }
-        
-        this.RaisePropertyChanged("CurrentPage");
-        this.RaisePropertyChanged("TotalPages");
 
-        ItemsOnDataGrid = new ObservableCollection<Teacher>(_itemsFilter.Skip((CurrentPage - 1) * 10).Take(10));
+        ItemsOnDataGrid = new ObservableCollection<Teacher>(_itemsFilter.Skip((CurrentPage - 1) * _countItems).Take(_countItems));
     }
     
-    public void Dispose()
-    {
-    }
+    public void Dispose() { }
 }

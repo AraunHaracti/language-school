@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -18,11 +17,28 @@ namespace LanguageSchool.ViewModels.UserControls;
 
 public class CoursesViewModel : ViewModelBase, IDisposable
 {
- private readonly Window _parentWindow;
+ private readonly Window? _parentWindow;
     
     private List<Course> _itemsFromDatabase;
 
     private List<Course> _itemsFilter;
+    
+    private readonly string _sql = "select " + 
+                                   "`course`.id as `id`, " +
+                                   "`course`.name as `name`, " +
+                                   "`course`.info as `info`, " +
+                                   "`course`.price as `price`, " +
+                                   "`course`.language_level_id as `language_level_id`, " +
+                                   "`language_level`.name as `language_level_name`, " +
+                                   "`language_level`.language_id as `language_id`, " +
+                                   "`language`.name as `language_name` " +
+                                   "from `course` " +
+                                   "join `language_level` " +
+                                   "on `course`.language_level_id = `language_level`.id " +
+                                   "join `language` " +
+                                   "on `language_level`.language_id = `language`.id";
+    
+    private readonly int _countItems = 15;
     
     public int CurrentPage { get; set; } = 1;
 
@@ -30,28 +46,13 @@ public class CoursesViewModel : ViewModelBase, IDisposable
     {
         get
         {
-            int page = (int)Math.Ceiling(_itemsFilter.Count / (double)10);
+            int page = (int)Math.Ceiling(_itemsFilter.Count / (double) _countItems);
             return page == 0 ? 1 : page;
         }
     }
 
     public Course CurrentItem { get; set; }
-    
-    private string _sql = "select " +
-                          "curse.id as id, " +
-                          "curse.name as name, " +
-                          "curse.info as info, " +
-                          "curse.price as price, " +
-                          "curse.proficiency_level_id as proficiency_level_id, " +
-                          "proficiency_level.name as proficiency_level_name, " +
-                          "proficiency_level.language_id as language_id, " +
-                          "language.name as language_name " +
-                          "from curse " +
-                          "join proficiency_level " +
-                          "on curse.proficiency_level_id = proficiency_level.id " +
-                          "join language " +
-                          "on proficiency_level.language_id = language.id";
-    
+
     private ObservableCollection<Course> _itemsOnDataGrid;
     
     public ObservableCollection<Course> ItemsOnDataGrid
@@ -60,7 +61,7 @@ public class CoursesViewModel : ViewModelBase, IDisposable
         set
         {
             _itemsOnDataGrid = value;
-            this.RaisePropertyChanged("ItemsOnDataGrid");
+            this.RaisePropertyChanged();
         }
     }
 
@@ -71,29 +72,62 @@ public class CoursesViewModel : ViewModelBase, IDisposable
         set
         {
             _searchQuery = value;
-            this.RaisePropertyChanged("SearchQuery");
+            this.RaisePropertyChanged();
         }
     }
 
     public CoursesViewModel()
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             _parentWindow = desktop.MainWindow;
         }
         
-        UpdateItems();
+        GetAndUpdateItems();
         
         PropertyChanged += OnSearchQueryChanged;
     }
     
-    private void OnSearchQueryChanged(object? sender, PropertyChangedEventArgs e)
+    public void AddItemButton()
     {
-        if (e.PropertyName != nameof(SearchQuery)) return;
-        Search();
-        TakeItems(TakeItemsEnum.FirstItems);
+        var view = new CourseInfoCard();
+        var vm = new CourseInfoCardViewModel(GetAndUpdateItems);
+        view.DataContext = vm;
+        view.ShowDialog(_parentWindow);
     }
 
+    public void EditItemButton()
+    {
+        if (CurrentItem == null)
+            return;
+        var view = new CourseInfoCard();
+        var vm = new CourseInfoCardViewModel(GetAndUpdateItems, CurrentItem);
+        view.DataContext = vm;
+        view.ShowDialog(_parentWindow);
+    }
+    
+    private void OnSearchQueryChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(SearchQuery)) 
+            return;
+
+        UpdateItems();
+    }
+
+    private void GetAndUpdateItems()
+    {
+        GetDataFromDatabase();
+        UpdateItems();
+    }
+
+    private void UpdateItems()
+    {
+        Search();
+        this.RaisePropertyChanged(nameof(TotalPages));
+        TakeItems(TakeItemsEnum.FirstItems);
+        this.RaisePropertyChanged(nameof(CurrentPage));
+    }
+    
     private void Search()
     {
         if (SearchQuery == "")
@@ -103,69 +137,36 @@ public class CoursesViewModel : ViewModelBase, IDisposable
         }
 
         _itemsFilter = new(_itemsFromDatabase.Where(it =>
-        {
-            PropertyInfo[] propertyInfos = typeof(Course).GetProperties();
-            foreach (PropertyInfo f in propertyInfos)
-            {
-                if (f.GetValue(it) == null)
-                    continue;
-                if (f.GetValue(it).ToString().ToLower().Contains(SearchQuery.ToLower()))
-                    return true;
-            }
-
-            return false;
-        }));
-    }
-    
-    public void UpdateItems()
-    {
-        GetDataFromDatabase();
-        Search();
-        TakeItems(TakeItemsEnum.FirstItems);
-    }
-    
-    public void AddCourseButton()
-    {
-        var view = new CourseInfoCard();
-        var vm = new CourseInfoCardViewModel(UpdateItems);
-        view.DataContext = vm;
-        view.ShowDialog(_parentWindow);
+            it.Name.Contains(SearchQuery) ||
+            it.LanguageName.Contains(SearchQuery) ||
+            it.LanguageLevelName.Contains(SearchQuery) ||
+            it.Info!.Contains(SearchQuery) ||
+            it.Price.ToString()!.Contains(SearchQuery)));
     }
 
-    public void EditCourseButton()
-    {
-        if (CurrentItem == null)
-            return;
-        var view = new CourseInfoCard();
-        var vm = new CourseInfoCardViewModel(UpdateItems, CurrentItem);
-        view.DataContext = vm;
-        view.ShowDialog(_parentWindow);
-    }
-    
     private void GetDataFromDatabase()
     {
         _itemsFromDatabase = new List<Course>();
 
-        using (Database db = new Database())
-        {
-            MySqlDataReader reader = db.GetData(_sql);
+        using Database db = new Database();
+        
+        MySqlDataReader reader = db.GetData(_sql);
             
-            while (reader.Read() && reader.HasRows)
+        while (reader.Read() && reader.HasRows)
+        {
+            var currentItem = new Course()
             {
-                var currentItem = new Course()
-                {
-                    Id = reader.GetInt32("id"),
-                    Name = reader.GetString("name"),
-                    Info = reader.GetString("info"),
-                    Price = reader.GetDouble("price"),
-                    ProficiencyLevelId = reader.GetInt32("proficiency_level_id"),
-                    ProficiencyLevelName = reader.GetString("proficiency_level_name"),
-                    LanguageId = reader.GetInt32("language_id"),
-                    LanguageName = reader.GetString("language_name")
-                };
+                Id = reader.GetInt32("id"),
+                Name = reader.GetString("name"),
+                Info = reader.GetString("info"),
+                Price = reader.GetDouble("price"),
+                LanguageLevelId = reader.GetInt32("language_level_id"),
+                LanguageLevelName = reader.GetString("language_level_name"),
+                LanguageId = reader.GetInt32("language_id"),
+                LanguageName = reader.GetString("language_name")
+            };
 
-                _itemsFromDatabase.Add(currentItem);
-            }
+            _itemsFromDatabase.Add(currentItem);
         }
     }
     
@@ -173,6 +174,7 @@ public class CoursesViewModel : ViewModelBase, IDisposable
     {
         switch (takeItems)
         {
+            default:
             case TakeItemsEnum.FirstItems:
                 CurrentPage = 1;
                 break;
@@ -188,14 +190,9 @@ public class CoursesViewModel : ViewModelBase, IDisposable
                     CurrentPage -= 1;
                 break;
         }
-        
-        this.RaisePropertyChanged("CurrentPage");
-        this.RaisePropertyChanged("TotalPages");
 
-        ItemsOnDataGrid = new ObservableCollection<Course>(_itemsFilter.Skip((CurrentPage - 1) * 10).Take(10));
+        ItemsOnDataGrid = new ObservableCollection<Course>(_itemsFilter.Skip((CurrentPage - 1) * _countItems).Take(_countItems));
     }
     
-    public void Dispose()
-    {
-    }
+    public void Dispose() { }
 }

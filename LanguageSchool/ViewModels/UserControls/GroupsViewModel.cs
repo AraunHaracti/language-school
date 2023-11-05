@@ -18,38 +18,40 @@ namespace LanguageSchool.ViewModels.UserControls;
 
 public class GroupsViewModel : ViewModelBase, IDisposable
 {
-    private readonly Window _parentWindow;
+    private readonly Window? _parentWindow;
     
     private List<Group> _itemsFromDatabase;
 
     private List<Group> _itemsFilter;
 
+    private readonly string _sql = "select " + 
+                                   "`group`.id as `id`, " + 
+                                   "`group`.teacher_id as `teacher_id`, " + 
+                                   "concat(teacher.name, ' ', teacher.surname) as `teacher_name`, " +
+                                   "`group`.course_id as `course_id`, " +
+                                   "`course`.name as `course_name`, " +
+                                   "`group`.name as `name` " +
+                                   "from `group` " +
+                                   "join `teacher` " +
+                                   "on `group`.teacher_id = `teacher`.id " +
+                                   "join `course` " +
+                                   "on `group`.course_id = `course`.id";
+    
+    private readonly int _countItems = 15;
+    
     public int CurrentPage { get; set; } = 1;
 
     public int TotalPages
     {
         get
         {
-            int page = (int)Math.Ceiling(_itemsFilter.Count / (double)10);
+            int page = (int)Math.Ceiling(_itemsFilter.Count / (double) _countItems);
             return page == 0 ? 1 : page;
         }
     }
 
     public Group CurrentItem { get; set; }
-    
-    private string _sql = $"select " +
-                          $"`group`.id as id, " +
-                          $"`group`.teacher as teacher_id, " +
-                          $"concat(teacher.name, ' ', teacher.surname) as teacher_name, " +
-                          $"`group`.curse_id as curse_id, " +
-                          $"curse.name as curse_name, " +
-                          $"`group`.name as name " +
-                          $"from `group` " +
-                          $"join teacher " +
-                          $"on `group`.teacher = teacher.id " +
-                          $"join curse " +
-                          $"on `group`.curse_id = curse.id";
-    
+
     private ObservableCollection<Group> _itemsOnDataGrid;
     
     public ObservableCollection<Group> ItemsOnDataGrid
@@ -58,7 +60,7 @@ public class GroupsViewModel : ViewModelBase, IDisposable
         set
         {
             _itemsOnDataGrid = value;
-            this.RaisePropertyChanged("ItemsOnDataGrid");
+            this.RaisePropertyChanged();
         }
     }
 
@@ -69,27 +71,71 @@ public class GroupsViewModel : ViewModelBase, IDisposable
         set
         {
             _searchQuery = value;
-            this.RaisePropertyChanged("SearchQuery");
+            this.RaisePropertyChanged();
         }
     }
     
     public GroupsViewModel()
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             _parentWindow = desktop.MainWindow;
         }
         
-        UpdateItems();
+        GetAndUpdateItems();
         
         PropertyChanged += OnSearchQueryChanged;
     }
     
+    public void AddItemButton()
+    {
+        var view = new GroupInfoCard(InfoCardEnum.Add);
+        var vm = new GroupInfoCardViewModel(GetAndUpdateItems);
+        view.DataContext = vm;
+        view.ShowDialog(_parentWindow);
+    }
+
+    public void EditItemButton()
+    {
+        if (CurrentItem == null)
+            return;
+        var view = new GroupInfoCard(InfoCardEnum.Edit);
+        var vm = new GroupInfoCardViewModel(GetAndUpdateItems, CurrentItem);
+        view.DataContext = vm;
+        view.ShowDialog(_parentWindow);
+    }
+    
+    public void OpenCardItemButton()
+    {
+        if (CurrentItem == null)
+            return;
+        var view = new GroupInfoCard(InfoCardEnum.Info);
+        var vm = new GroupInfoCardViewModel(CurrentItem);
+        view.DataContext = vm;
+        view.ShowDialog(_parentWindow);
+    }
+
+    
     private void OnSearchQueryChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName != nameof(SearchQuery)) return;
+        if (e.PropertyName != nameof(SearchQuery)) 
+            return;
+
+        UpdateItems();
+    }
+
+    private void GetAndUpdateItems()
+    {
+        GetDataFromDatabase();
+        UpdateItems();
+    }
+
+    private void UpdateItems()
+    {
         Search();
+        this.RaisePropertyChanged(nameof(TotalPages));
         TakeItems(TakeItemsEnum.FirstItems);
+        this.RaisePropertyChanged(nameof(CurrentPage));
     }
     
     private void Search()
@@ -101,79 +147,32 @@ public class GroupsViewModel : ViewModelBase, IDisposable
         }
 
         _itemsFilter = new(_itemsFromDatabase.Where(it =>
-        {
-            PropertyInfo[] propertyInfos = typeof(Group).GetProperties();
-            foreach (PropertyInfo f in propertyInfos)
-            {
-                if (f.GetValue(it) == null)
-                    continue;
-                if (f.GetValue(it).ToString().ToLower().Contains(SearchQuery.ToLower()))
-                    return true;
-            }
-
-            return false;
-        }));
-    }
-    
-    public void UpdateItems()
-    {
-        GetDataFromDatabase();
-        Search();
-        TakeItems(TakeItemsEnum.FirstItems);
-    }
-    
-    public void AddGroupButton()
-    {
-        var view = new GroupInfoCard(InfoCardEnum.Add);
-        var vm = new GroupInfoCardViewModel(UpdateItems);
-        view.DataContext = vm;
-        view.ShowDialog(_parentWindow);
-    }
-
-    public void EditGroupButton()
-    {
-        if (CurrentItem == null)
-            return;
-        var view = new GroupInfoCard(InfoCardEnum.Edit);
-        var vm = new GroupInfoCardViewModel(UpdateItems, CurrentItem);
-        view.DataContext = vm;
-        view.ShowDialog(_parentWindow);
-    }
-    
-    public void OpenCardGroupButton()
-    {
-        /*
-        if (CurrentItem == null)
-            return;
-        var view = new GroupInfoCard(InfoCardEnum.Info);
-        var vm = new GroupInfoCardViewModel(UpdateItems, CurrentItem);
-        view.DataContext = vm;
-        view.ShowDialog(_parentWindow);
-        */
+            it.TeacherName.Contains(SearchQuery) ||
+            it.CourseName.Contains(SearchQuery) ||
+            it.Name.Contains(SearchQuery)));
     }
     
     private void GetDataFromDatabase()
     {
         _itemsFromDatabase = new List<Group>();
 
-        using (Database db = new Database())
-        {
-            MySqlDataReader reader = db.GetData(_sql);
+        using Database db = new Database();
+        
+        MySqlDataReader reader = db.GetData(_sql);
             
-            while (reader.Read() && reader.HasRows)
+        while (reader.Read() && reader.HasRows)
+        {
+            var currentItem = new Group()
             {
-                var currentItem = new Group()
-                {
-                    Id = reader.GetInt32("id"),
-                    TeacherId = reader.GetInt32("teacher_id"),
-                    CourseId = reader.GetInt32("curse_id"),
-                    TeacherName = reader.GetString("teacher_name"),
-                    CourseName = reader.GetString("curse_name"),
-                    Name = reader.GetString("name"),
-                };
+                Id = reader.GetInt32("id"),
+                TeacherId = reader.GetInt32("teacher_id"),
+                CourseId = reader.GetInt32("course_id"),
+                TeacherName = reader.GetString("teacher_name"),
+                CourseName = reader.GetString("course_name"),
+                Name = reader.GetString("name"),
+            };
                 
-                _itemsFromDatabase.Add(currentItem);
-            }
+            _itemsFromDatabase.Add(currentItem);
         }
     }
     
@@ -181,6 +180,7 @@ public class GroupsViewModel : ViewModelBase, IDisposable
     {
         switch (takeItems)
         {
+            default:
             case TakeItemsEnum.FirstItems:
                 CurrentPage = 1;
                 break;
@@ -196,14 +196,9 @@ public class GroupsViewModel : ViewModelBase, IDisposable
                     CurrentPage -= 1;
                 break;
         }
-        
-        this.RaisePropertyChanged("CurrentPage");
-        this.RaisePropertyChanged("TotalPages");
 
-        ItemsOnDataGrid = new ObservableCollection<Group>(_itemsFilter.Skip((CurrentPage - 1) * 10).Take(10));
+        ItemsOnDataGrid = new ObservableCollection<Group>(_itemsFilter.Skip((CurrentPage - 1) * _countItems).Take(_countItems));
     }
     
-    public void Dispose()
-    {
-    }
+    public void Dispose() { }
 }
