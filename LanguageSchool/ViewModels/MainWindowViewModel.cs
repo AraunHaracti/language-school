@@ -25,6 +25,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
     
+    public MainWindowViewModel(){}
+    
+    
     public MainWindowViewModel(IEnumerable<IModule> modules)
     {
         Modules = new List<IModule>(modules);

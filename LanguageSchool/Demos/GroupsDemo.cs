@@ -1,4 +1,7 @@
+using System;
 using Avalonia.Controls;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using LanguageSchool.Utils;
 using LanguageSchool.ViewModels.UserControls;
 using LanguageSchool.Views.UserControls;
@@ -12,6 +15,8 @@ public class GroupsDemo : IModule
 
     public string Name => "Группы";
 
+    public Bitmap Picture => new Bitmap(AssetLoader.Open(new Uri("avares://LanguageSchool/Assets/group.png")));
+    
     public UserControl UserInterface
     {
         get

@@ -6,25 +6,30 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="LanguageSchool.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/school.png"
         Title="LanguageSchool">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <ListBox 
+        <ListBox Grid.Column="0"
+            Background="#ccc9b8"
             ItemsSource="{Binding Modules}"
             SelectedItem="{Binding SelectedModule, Mode=TwoWay}">
+            
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}"/>
+                    <StackPanel>
+                        <Image Width="32" Height="32" Source="{Binding Picture}" Margin="5"/>
+                        <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="10" HorizontalAlignment="Center"/>    
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

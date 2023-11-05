@@ -1,4 +1,7 @@
+using System;
 using Avalonia.Controls;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using LanguageSchool.Utils;
 using LanguageSchool.ViewModels.UserControls;
 using LanguageSchool.Views.UserControls;
@@ -10,7 +13,9 @@ public class AttendancesDemo : IModule
     private AttendancesView _view;
     private AttendancesViewModel _viewModel;
 
-    public string Name => "Посещаемость";
+    public string Name => "Посещение";
+
+    public Bitmap Picture => new Bitmap(AssetLoader.Open(new Uri("avares://LanguageSchool/Assets/attendances.png")));
 
     public UserControl UserInterface
     {
