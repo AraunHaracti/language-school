@@ -39,7 +39,6 @@
                         <TextBox x:Name="SearchTextBox" Text="{Binding SearchQuery, Mode=TwoWay}" Classes="Search"/>
                         <Button x:Name="AddClient" Content="Добавить" Command="{Binding AddItemButton}" Classes="Action"/>
                         <Button x:Name="EditClient" Content="Изменить" Command="{Binding EditItemButton}" Classes="Action"/>
-                        <Button x:Name="OpenCardClient" Content="Информация" Command="{Binding OpenCardItemButton}" Classes="Action"/>
                 </StackPanel>
 
                 <DataGrid x:Name="ItemDataGrid" 

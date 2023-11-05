@@ -48,7 +48,7 @@
                           IsReadOnly="True" 
                           ItemsSource="{Binding ItemsOnDataGrid}"
                           SelectedItem="{Binding CurrentItem}"
-                          Height="400">
+                          Height="600">
                         <DataGrid.Columns>
                                 <DataGridTextColumn Header="Имя" Binding="{Binding Name}" Width="200"/>
                                 <DataGridTextColumn Header="Фамилия" Binding="{Binding Surname}" Width="200"/>

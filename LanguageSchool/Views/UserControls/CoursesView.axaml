@@ -38,7 +38,7 @@
             <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBox x:Name="SearchTextBox" Text="{Binding SearchQuery, Mode=TwoWay}" Classes="Search"/>
                     <Button x:Name="AddItem" Content="Добавить" Command="{Binding AddItemButton}" Classes="Action"/>
-                    <Button x:Name="OpenCardItem" Content="Информация" Command="{Binding OpenCardItemButton}" Classes="Action"/>
+                    <Button x:Name="EditItem" Content="Изменить" Command="{Binding EditItemButton}" Classes="Action"/>
             </StackPanel>
         
                 <DataGrid x:Name="ItemDataGrid" 
@@ -47,7 +47,7 @@
                           IsReadOnly="True" 
                           ItemsSource="{Binding ItemsOnDataGrid}"
                           SelectedItem="{Binding CurrentItem}"
-                          Height="400">
+                          Height="600">
                         <DataGrid.Columns>
                                 <DataGridTextColumn Header="Название" Binding="{Binding Name}"/>
                                 <DataGridTextColumn Header="Описание" Binding="{Binding Info}"/>

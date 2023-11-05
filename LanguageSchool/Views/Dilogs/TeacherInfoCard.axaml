@@ -38,7 +38,7 @@
                         Height="200">
                         <DataGrid.Columns>
                                 <DataGridTextColumn Header="Язык" Binding="{Binding LanguageName}" Width="140"/>
-                                <DataGridTextColumn Header="Уровень" Binding="{Binding ProficiencyLevelName}" Width="100"/>
+                                <DataGridTextColumn Header="Уровень" Binding="{Binding LanguageLevelName}" Width="100"/>
                         </DataGrid.Columns>
                 </DataGrid>
                 

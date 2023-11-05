@@ -27,17 +27,17 @@ public class ClientInfoCardViewModel : ViewModelBase
     private string _sql = $"select " +
                           $"client_language.id as id, " +
                           $"client_language.client_id as client_id, " +
-                          $"client_language.proficiency_level_id as proficiency_level_id, " +
-                          $"proficiency_level.name as proficiency_level_name, " +
-                          $"proficiency_level.language_id as language_id, " +
+                          $"client_language.language_level_id as language_level_id, " +
+                          $"language_level.name as language_level_name, " +
+                          $"language_level.language_id as language_id, " +
                           $"language.name as language_name, " +
                           $"client_language.last_experience as last_experience, " +
                           $"client_language.needs as needs " +
                           $"from client_language " +
-                          $"join proficiency_level " +
-                          $"on client_language.proficiency_level_id = proficiency_level.id " +
+                          $"join language_level " +
+                          $"on client_language.language_level_id = language_level.id " +
                           $"join language " +
-                          $"on proficiency_level.language_id = language.id";
+                          $"on language_level.language_id = language.id";
 
     
     private Client _person;
@@ -86,9 +86,9 @@ public class ClientInfoCardViewModel : ViewModelBase
                 {
                     Id = reader.GetInt32("id"),
                     ClientId = reader.GetInt32("client_id"),
-                    ProficiencyLevelId = reader.GetInt32("proficiency_level_id"), 
+                    LanguageLevelId = reader.GetInt32("language_level_id"), 
                     LanguageId = reader.GetInt32("language_id"),
-                    ProficiencyLevelName = reader.GetString("proficiency_level_name"),
+                    LanguageLevelName = reader.GetString("language_level_name"),
                     LanguageName = reader.GetString("language_name"),
                 };
                 currentItem.LastExperience = (reader.IsDBNull("last_experience") ? null : reader.GetString("last_experience"));
@@ -110,6 +110,15 @@ public class ClientInfoCardViewModel : ViewModelBase
     public ClientInfoCardViewModel(Action action, Client client) : this()
     {
         _action = action;
+        _person = client;
+
+        _isEdit = true;
+        
+        UpdateItems();
+    }
+    
+    public ClientInfoCardViewModel(Client client) : this()
+    {
         _person = client;
 
         _isEdit = true;

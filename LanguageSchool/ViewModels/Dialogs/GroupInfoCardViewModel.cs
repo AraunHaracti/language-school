@@ -170,6 +170,13 @@ public class GroupInfoCardViewModel : ViewModelBase
         _isEdit = true;
     }
     
+    public GroupInfoCardViewModel(Group group) : this()
+    {
+        _item = group;
+
+        _isEdit = true;
+    }
+    
     private void OnSearchQueryChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName != nameof(SearchQuery)) return;

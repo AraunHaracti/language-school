@@ -24,16 +24,16 @@ public class TeacherInfoCardViewModel : ViewModelBase
     
     private string _sql = $"select " +
                           $"teacher_language.id as id, " +
-                          $"teacher_language.teacher as teacher_id, " +
-                          $"teacher_language.proficiency_level_id as proficiency_level_id, " +
-                          $"proficiency_level.name as proficiency_level_name, " +
-                          $"proficiency_level.language_id as language_id, " +
+                          $"teacher_language.teacher_id as teacher_id, " +
+                          $"teacher_language.language_level_id as language_level_id, " +
+                          $"language_level.name as language_level_name, " +
+                          $"language_level.language_id as language_id, " +
                           $"language.name as language_name " +
                           $"from teacher_language " +
-                          $"join proficiency_level " +
-                          $"on teacher_language.proficiency_level_id = proficiency_level.id " +
+                          $"join language_level " +
+                          $"on teacher_language.language_level_id = language_level.id " +
                           $"join language " +
-                          $"on proficiency_level.language_id = language.id";
+                          $"on language_level.language_id = language.id";
     
     private Teacher _person;
 
@@ -71,24 +71,22 @@ public class TeacherInfoCardViewModel : ViewModelBase
     {
         _itemsFromDatabase = new List<TeacherLanguage>();
 
-        using (Database db = new Database())
-        {
-            MySqlDataReader reader = db.GetData(_sql);
+        using Database db = new Database();
+        MySqlDataReader reader = db.GetData(_sql);
             
-            while (reader.Read() && reader.HasRows)
+        while (reader.Read() && reader.HasRows)
+        {
+            var currentItem = new TeacherLanguage()
             {
-                var currentItem = new TeacherLanguage()
-                {
-                    Id = reader.GetInt32("id"),
-                    TeacherId = reader.GetInt32("teacher_id"),
-                    ProficiencyLevelId = reader.GetInt32("proficiency_level_id"),
-                    LanguageId = reader.GetInt32("language_id"),
-                    ProficiencyLevelName = reader.GetString("proficiency_level_name"),
-                    LanguageName = reader.GetString("language_name"),
-                };
+                Id = reader.GetInt32("id"),
+                TeacherId = reader.GetInt32("teacher_id"),
+                LanguageLevelId = reader.GetInt32("language_level_id"),
+                LanguageId = reader.GetInt32("language_id"),
+                LanguageLevelName = reader.GetString("language_level_name"),
+                LanguageName = reader.GetString("language_name"),
+            };
 
-                _itemsFromDatabase.Add(currentItem);
-            }
+            _itemsFromDatabase.Add(currentItem);
         }
     }
     
@@ -103,6 +101,15 @@ public class TeacherInfoCardViewModel : ViewModelBase
     public TeacherInfoCardViewModel(Action action, Teacher teacher) : this()
     {
         _action = action;
+        _person = teacher;
+
+        _isEdit = true;
+        
+        UpdateItems();
+    }
+    
+    public TeacherInfoCardViewModel(Teacher teacher) : this()
+    {
         _person = teacher;
 
         _isEdit = true;
