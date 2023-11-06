@@ -134,8 +134,11 @@ public class TeacherLanguageInfoCardViewModel : ViewModelBase
         _isEdit = true;
     }
 
-    public void ActionTeacherLanguage()
+    public bool ActionTeacherLanguage()
     {
+        if (LanguageLevelsNameIndex == -1)
+            return false;
+        
         if (_isEdit)
         {
             EditTeacherLanguage();
@@ -146,6 +149,8 @@ public class TeacherLanguageInfoCardViewModel : ViewModelBase
         }
         
         _action.Invoke();
+
+        return true;
     }
 
     private void AddTeacherLanguage()

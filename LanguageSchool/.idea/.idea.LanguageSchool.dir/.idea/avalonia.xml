@@ -8,10 +8,16 @@
         <entry key="Views/CkientsView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/ClientsView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/CoursesView.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/Dialogs/ClientLanguageInfoCard.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/Dialogs/TeacherInfoCard.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/Dialogs/TeacherLanguageInfoCard.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/Dilogs/ClientInfoCard.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/Dilogs/ClientLanguageInfoCard.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/Dilogs/CourseInfoCard.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/Dilogs/GroupClientInfoCard.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/Dilogs/GroupInfoCard.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/Dilogs/PaymentInfoCard.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/Dilogs/ScheduleInfoCard.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/Dilogs/TeacherInfoCard.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/Dilogs/TeacherLanguageInfoCard.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/MainWindow.axaml" value="LanguageSchool.csproj" />

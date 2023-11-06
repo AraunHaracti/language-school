@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using LanguageSchool.Models;
 using LanguageSchool.Utils;
 using MySql.Data.MySqlClient;
@@ -15,7 +11,6 @@ namespace LanguageSchool.ViewModels.Dialogs;
 
 public class CourseInfoCardViewModel : ViewModelBase
 {
-    private readonly Window _parentWindow;
     private bool _isEdit;
     
     private Action _action;
@@ -62,11 +57,6 @@ public class CourseInfoCardViewModel : ViewModelBase
     
     public CourseInfoCardViewModel()
     {
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            _parentWindow = desktop.MainWindow;
-        }
-        
         using (Database db = new Database())
         {
             MySqlDataReader reader = db.GetData("select * from language");

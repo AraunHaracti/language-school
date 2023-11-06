@@ -4,7 +4,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using LanguageSchool.Utils;
 
-namespace LanguageSchool.Views.Dilogs;
+namespace LanguageSchool.Views.Dialogs;
 
 public partial class TeacherInfoCard : Window
 {

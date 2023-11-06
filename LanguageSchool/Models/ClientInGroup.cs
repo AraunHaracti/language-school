@@ -1,4 +1,6 @@
-﻿namespace LanguageSchool.Models;
+﻿using System;
+
+namespace LanguageSchool.Models;
 
 public partial class ClientInGroup
 {
@@ -7,4 +9,10 @@ public partial class ClientInGroup
     public int GroupId { get; set; }
 
     public int ClientId { get; set; }
+    
+    public string ClientName { get; set; }
+    
+    public string ClientSurname { get; set; }
+    
+    public DateTimeOffset ClientBirthday { get; set; } = DateTimeOffset.Now; 
 }

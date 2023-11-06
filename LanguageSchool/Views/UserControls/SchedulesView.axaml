@@ -51,7 +51,7 @@
                         <DataGrid.Columns>
                                 <DataGridTextColumn Header="Группа" Binding="{Binding GroupName}" Width="200"/>
                                 <DataGridTextColumn Header="Информация" Binding="{Binding About}" Width="200"/>
-                                <DataGridTextColumn Header="Время" Binding="{Binding Datetime}" Width="200"/>
+                                <DataGridTextColumn Header="Время" Binding="{Binding Datetime, StringFormat=d}" Width="200"/>
                         </DataGrid.Columns>
                 </DataGrid>        
                 

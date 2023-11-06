@@ -3,28 +3,26 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using LanguageSchool.Models;
 using LanguageSchool.Utils;
-using LanguageSchool.ViewModels.Dialogs;
-using LanguageSchool.Views.Dialogs;
 using MySql.Data.MySqlClient;
 using ReactiveUI;
 
-namespace LanguageSchool.ViewModels.UserControls;
+namespace LanguageSchool.ViewModels.Dialogs;
 
-public class TeachersViewModel : ViewModelBase, IDisposable
+public class GroupClientInfoCardViewModel : ViewModelBase, IDisposable
 {
-    private readonly Window? _parentWindow;
+    private Action _action;
     
-    private List<Teacher> _itemsFromDatabase;
+    private List<Client> _itemsFromDatabase;
 
-    private List<Teacher> _itemsFilter;
+    private List<Client> _itemsFilter;
 
+    private Group _parentItem;
+    
     private readonly string _sql = "select * " +
-                                   "from `teacher`";
+                                   "from client";
     
     private readonly int _countItems = 15;
     
@@ -39,11 +37,11 @@ public class TeachersViewModel : ViewModelBase, IDisposable
         }
     }
 
-    public Teacher CurrentItem { get; set; }
+    public Client CurrentItem { get; set; }
 
-    private ObservableCollection<Teacher> _itemsOnDataGrid;
+    private ObservableCollection<Client> _itemsOnDataGrid;
     
-    public ObservableCollection<Teacher> ItemsOnDataGrid
+    public ObservableCollection<Client> ItemsOnDataGrid
     {
         get => _itemsOnDataGrid;
         set
@@ -63,47 +61,20 @@ public class TeachersViewModel : ViewModelBase, IDisposable
             this.RaisePropertyChanged();
         }
     }
-    
-    public TeachersViewModel()
+
+    public GroupClientInfoCardViewModel()
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            _parentWindow = desktop.MainWindow;
-        }
-        
         GetAndUpdateItems();
         
         PropertyChanged += OnSearchQueryChanged;
     }
     
-    public void AddItemButton()
+    public GroupClientInfoCardViewModel(Action action, Group group) : this()
     {
-        var view = new TeacherInfoCard(InfoCardEnum.Add);
-        var vm = new TeacherInfoCardViewModel(GetAndUpdateItems);
-        view.DataContext = vm;
-        view.ShowDialog(_parentWindow);
+        _parentItem = group;
+        _action = action;
     }
 
-    public void EditItemButton()
-    {
-        if (CurrentItem == null)
-            return;
-        var view = new TeacherInfoCard(InfoCardEnum.Edit);
-        var vm = new TeacherInfoCardViewModel(GetAndUpdateItems, CurrentItem);
-        view.DataContext = vm;
-        view.ShowDialog(_parentWindow);
-    }
-
-    public void OpenCardItemButton()
-    {
-        if (CurrentItem == null)
-            return;
-        var view = new TeacherInfoCard(InfoCardEnum.Info);
-        var vm = new TeacherInfoCardViewModel(CurrentItem);
-        view.DataContext = vm;
-        view.ShowDialog(_parentWindow);
-    }
-    
     private void OnSearchQueryChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName != nameof(SearchQuery)) 
@@ -111,7 +82,7 @@ public class TeachersViewModel : ViewModelBase, IDisposable
 
         UpdateItems();
     }
-
+    
     private void GetAndUpdateItems()
     {
         GetDataFromDatabase();
@@ -137,14 +108,12 @@ public class TeachersViewModel : ViewModelBase, IDisposable
         _itemsFilter = new(_itemsFromDatabase.Where(it =>
             it.Name.Contains(SearchQuery) || 
             it.Surname.Contains(SearchQuery) ||
-            it.Birthday.ToString().Contains(SearchQuery) ||
-            it.Phone!.Contains(SearchQuery) ||
-            it.Email!.Contains(SearchQuery)));
+            it.Birthday.ToString().Contains(SearchQuery)));
     }
-
+    
     private void GetDataFromDatabase()
     {
-        _itemsFromDatabase = new List<Teacher>();
+        _itemsFromDatabase = new List<Client>();
 
         using Database db = new Database();
         
@@ -152,18 +121,34 @@ public class TeachersViewModel : ViewModelBase, IDisposable
             
         while (reader.Read() && reader.HasRows)
         {
-            var currentItem = new Teacher
+            var currentItem = new Client()
             {
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("name"),
                 Surname = reader.GetString("surname"),
                 Birthday = reader.GetDateTime("birthday"),
-                Phone = reader.GetString("phone"),
-                Email = reader.GetString("email"),
             };
-
+            
             _itemsFromDatabase.Add(currentItem);
         }
+    }
+    
+    public bool ActionGroupClient()
+    {
+        if (CurrentItem == null)
+            return false;
+
+        using (Database db = new Database())
+        {
+            string sql =
+                $"insert into client_in_group (group_id, client_id) values ({_parentItem.Id}, {CurrentItem.Id})";
+
+            db.SetData(sql);
+        }
+        
+        _action.Invoke();
+
+        return true;
     }
     
     public void TakeItems(TakeItemsEnum takeItems)
@@ -187,8 +172,9 @@ public class TeachersViewModel : ViewModelBase, IDisposable
                 break;
         }
 
-        ItemsOnDataGrid = new ObservableCollection<Teacher>(_itemsFilter.Skip((CurrentPage - 1) * _countItems).Take(_countItems));
+        ItemsOnDataGrid = new ObservableCollection<Client>(_itemsFilter.Skip((CurrentPage - 1) * _countItems).Take(_countItems));
     }
     
     public void Dispose() { }
+    
 }

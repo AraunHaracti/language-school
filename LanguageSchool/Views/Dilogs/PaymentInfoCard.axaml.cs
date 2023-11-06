@@ -1,39 +1,42 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using LanguageSchool.Utils;
 
-namespace LanguageSchool.Views.Dilogs;
+namespace LanguageSchool.Views.Dialogs;
 
 public partial class PaymentInfoCard : Window
 {
-    public PaymentInfoCard(InfoCardEnum action)
+    public PaymentInfoCard()
     {
         InitializeComponent();
-
-        var languageMenu = this.FindControl<StackPanel>("LanguageMenu");
-        var languageDataGrid = this.FindControl<DataGrid>("LanguageDataGrid");
-
-        switch (action)
-        {
-            case InfoCardEnum.Add:
-                languageMenu.IsVisible = false;
-                languageDataGrid.IsVisible = false;
-                break;
-            case InfoCardEnum.Edit:
-                languageMenu.IsVisible = true;
-                languageDataGrid.IsVisible = true;
-                break;
-            case InfoCardEnum.Info:
-                languageMenu.IsVisible = false;
-                languageDataGrid.IsVisible = true;
-                this.FindControl<Button>("Ok").IsVisible = false;
-                break;
-        }
     }
 
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
+    }
+
+    private void Ok_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var dataContext = DataContext as ViewModels.Dialogs.PaymentInfoCardViewModel;
+        bool result = dataContext.ActionPayment();
+        
+        if (result)
+            Close();
+    }
+
+    private void Exit_OnClick(object? sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private void Groups_OnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (DataContext == null || e.Property.Name != "SelectedIndex")
+            return;
+        var dataContext = DataContext as ViewModels.Dialogs.PaymentInfoCardViewModel;
+        dataContext.GroupsComboBoxChanged();
     }
 }

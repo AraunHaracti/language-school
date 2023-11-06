@@ -7,8 +7,9 @@
         CanResize="False"
         SizeToContent="WidthAndHeight"
         x:DataType="vm:TeacherLanguageInfoCardViewModel"
-        x:Class="LanguageSchool.Views.Dilogs.TeacherLanguageInfoCard"
+        x:Class="LanguageSchool.Views.Dialogs.TeacherLanguageInfoCard"
         Title="TeacherLanguageInfoCard">
+        
         <Design.DataContext>
                 <vm:TeacherLanguageInfoCardViewModel/>
         </Design.DataContext>

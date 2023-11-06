@@ -7,11 +7,11 @@
         CanResize="False"
         SizeToContent="WidthAndHeight"
         x:DataType="vm:ClientInfoCardViewModel"
-        x:Class="LanguageSchool.Views.Dilogs.ClientInfoCard"
+        x:Class="LanguageSchool.Views.Dialogs.ClientInfoCard"
         Title="ClientInfoCard">
         
         <Design.DataContext>
-                <vm:ClientInfoCardViewModel></vm:ClientInfoCardViewModel>
+                <vm:ClientInfoCardViewModel/>
         </Design.DataContext>
         
         <Window.Styles>

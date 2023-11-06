@@ -1,10 +1,8 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using LanguageSchool.Utils;
 
-namespace LanguageSchool.Views.Dilogs;
+namespace LanguageSchool.Views.Dialogs;
 
 public partial class ClientInfoCard : Window
 {

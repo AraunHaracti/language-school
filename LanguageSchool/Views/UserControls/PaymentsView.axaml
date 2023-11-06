@@ -38,7 +38,6 @@
                 <StackPanel Orientation="Horizontal" Margin="5">
                         <TextBox x:Name="SearchTextBox" Text="{Binding SearchQuery, Mode=TwoWay}" Classes="Search"/>
                         <Button x:Name="AddItem" Content="Добавить" Command="{Binding AddItemButton}" Classes="Action"/>
-                        <Button x:Name="OpenCardItem" Content="Информация" Command="{Binding OpenCardItemButton}" Classes="Action"/>
                 </StackPanel>
 
                 <DataGrid x:Name="ItemDataGrid" 
@@ -52,7 +51,7 @@
                                 <DataGridTextColumn Header="Группа" Binding="{Binding GroupName}" Width="200"/>
                                 <DataGridTextColumn Header="Клиент" Binding="{Binding ClientName}" Width="200"/>
                                 <DataGridTextColumn Header="Сумма" Binding="{Binding Count}" Width="200"/>
-                                <DataGridTextColumn Header="Дата" Binding="{Binding Date}" Width="200"/>
+                                <DataGridTextColumn Header="Дата" Binding="{Binding Date, StringFormat=d}" Width="200"/>
                         </DataGrid.Columns>
                 </DataGrid>        
                 

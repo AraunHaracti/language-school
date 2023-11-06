@@ -9,6 +9,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using LanguageSchool.Models;
 using LanguageSchool.Utils;
+using LanguageSchool.Views.Dilogs;
 using MySql.Data.MySqlClient;
 using ReactiveUI;
 
@@ -21,9 +22,20 @@ public class GroupInfoCardViewModel : ViewModelBase
     
     private Action _action;
     
-    private List<Client> _itemsFromDatabase = new();
+    private List<ClientInGroup> _itemsFromDatabase = new();
     
-    private List<Client> _itemsFilter = new();
+    private List<ClientInGroup> _itemsFilter = new();
+
+    private readonly string _sql = "select " +
+                                   "client_in_group.id as id, " +
+                                   "client_in_group.group_id as group_id, " +
+                                   "client_in_group.client_id as client_id, " +
+                                   "client.name as client_name, " +
+                                   "client.surname as client_surname, " +
+                                   "client.birthday as client_birthday " +
+                                   "from client_in_group " +
+                                   "join client " +
+                                   "on client_in_group.client_id = client.id";
     
     public int CurrentPage { get; set; } = 1;
 
@@ -49,7 +61,7 @@ public class GroupInfoCardViewModel : ViewModelBase
     
     private Group _item;
     
-    private ObservableCollection<Client> _groupClients = new();
+    private ObservableCollection<ClientInGroup> _groupClients = new();
 
     private List<Teacher> _teachers = new ();
     private List<Course> _courses = new ();
@@ -84,11 +96,11 @@ public class GroupInfoCardViewModel : ViewModelBase
         } 
     }
     
-    public Client CurrentItem { get; set; }
+    public ClientInGroup CurrentItem { get; set; }
     
     public Group Item => _item;
     
-    public ObservableCollection<Client> GroupClients
+    public ObservableCollection<ClientInGroup> GroupClients
     {
         get => _groupClients;
         set
@@ -111,13 +123,15 @@ public class GroupInfoCardViewModel : ViewModelBase
             
             while (reader.Read() && reader.HasRows)
             {
-                var currentItem = new Teacher();
-
-                PropertyInfo[] propertyInfos = typeof(Teacher).GetProperties();
-                for (int i = 0; i < propertyInfos.Length; i++)
+                var currentItem = new Teacher
                 {
-                    propertyInfos[i].SetValue(currentItem, reader.GetValue(i));
-                }
+                    Id = reader.GetInt32("id"),
+                    Name = reader.GetString("name"),
+                    Surname = reader.GetString("surname"),
+                    Birthday = reader.GetDateTime("birthday"),
+                    Phone = reader.GetString("phone"),
+                    Email = reader.GetString("email"),
+                };
 
                 _teachers.Add(currentItem);
             }
@@ -130,7 +144,7 @@ public class GroupInfoCardViewModel : ViewModelBase
         
         using (Database db = new Database())
         {
-            MySqlDataReader reader = db.GetData("select * from curse");
+            MySqlDataReader reader = db.GetData("select * from course");
             
             while (reader.Read() && reader.HasRows)
             {
@@ -216,30 +230,22 @@ public class GroupInfoCardViewModel : ViewModelBase
     
     private void GetDataFromDatabase()
     {
-        if (Item?.Id == null)
-            return;
-
-        string sql = "select " +
-                     "client.* " +
-                     "from client " +
-                     "join client_in_group " +
-                     "on client.id = client_in_group.client_id " +
-                     $"where group_id = {Item.Id}";
-        
-        _itemsFromDatabase = new List<Client>();
+        _itemsFromDatabase = new List<ClientInGroup>();
 
         using (Database db = new Database())
         {
-            MySqlDataReader reader = db.GetData(sql);
+            MySqlDataReader reader = db.GetData(_sql);
             
             while (reader.Read() && reader.HasRows)
             {
-                var currentItem = new Client()
+                var currentItem = new ClientInGroup()
                 {
-                    Id = reader.GetInt32("Id"),
-                    Name = reader.GetString("Name"),
-                    Surname = reader.GetString("Surname"),
-                    Birthday = reader.GetDateTime("Birthday"),
+                    Id = reader.GetInt32("id"),
+                    GroupId = reader.GetInt32("group_id"),
+                    ClientId = reader.GetInt32("client_id"),
+                    ClientName = reader.GetString("client_name"),
+                    ClientSurname = reader.GetString("client_surname"),
+                    ClientBirthday = reader.GetDateTime("client_birthday"),
                 };
 
                 _itemsFromDatabase.Add(currentItem);
@@ -268,7 +274,7 @@ public class GroupInfoCardViewModel : ViewModelBase
     
     private void AddGroup()
     {
-        string sql = $"insert into `group` (name, teacher, curse_id) values (" +
+        string sql = $"insert into `group` (name, teacher_id, course_id) values (" +
                      $"'{Item.Name}', " +
                      $"{_teachers.Where(it => it.Name == TeachersName[TeacherNameIndex]).ToList()[0].Id}, " +
                      $"{_courses.Where(it => it.Name == CoursesName[CourseNameIndex]).ToList()[0].Id})";
@@ -283,7 +289,7 @@ public class GroupInfoCardViewModel : ViewModelBase
     {
         string sql = $"update group set " +
                      $"name = '{Item.Name}', " +
-                     $"teacher = {Item.TeacherId}, " +
+                     $"teacher_id = {Item.TeacherId}, " +
                      $"curse_id = {Item.CourseId} " +
                      $"where id = {Item.Id}";
         
@@ -295,12 +301,24 @@ public class GroupInfoCardViewModel : ViewModelBase
     
     public void AddClientButton()
     {
-        
+        var view = new GroupClientInfoCard();
+        var vm = new GroupClientInfoCardViewModel(UpdateItems, Item);
+        view.DataContext = vm;
+        view.ShowDialog(_parentWindow);
     }
 
     public void DeleteClientButton()
     {
+        if (CurrentItem == null)
+            return;
         
+        string sql = $"delete from client_in_group where client_in_group.id = {CurrentItem.Id}";
+
+        using Database db = new Database();
+        
+        db.SetData(sql);
+
+        UpdateItems();
     }
     
     public void TakeItems(TakeItemsEnum takeItems)
@@ -326,6 +344,6 @@ public class GroupInfoCardViewModel : ViewModelBase
         this.RaisePropertyChanged("CurrentPage");
         this.RaisePropertyChanged("TotalPages");
 
-        GroupClients = new ObservableCollection<Client>(_itemsFilter.Skip((CurrentPage - 1) * 10).Take(10));
+        GroupClients = new ObservableCollection<ClientInGroup>(_itemsFilter.Skip((CurrentPage - 1) * 10).Take(10));
     }
 }

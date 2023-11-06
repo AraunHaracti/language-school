@@ -7,7 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using LanguageSchool.Models;
 using LanguageSchool.Utils;
-using LanguageSchool.Views.Dilogs;
+using LanguageSchool.Views.Dialogs;
 using MySql.Data.MySqlClient;
 using ReactiveUI;
 
@@ -23,17 +23,17 @@ public class TeacherInfoCardViewModel : ViewModelBase
     private List<TeacherLanguage> _itemsFromDatabase;
     
     private string _sql = $"select " +
-                          $"teacher_language.id as id, " +
-                          $"teacher_language.teacher_id as teacher_id, " +
-                          $"teacher_language.language_level_id as language_level_id, " +
-                          $"language_level.name as language_level_name, " +
-                          $"language_level.language_id as language_id, " +
-                          $"language.name as language_name " +
-                          $"from teacher_language " +
-                          $"join language_level " +
-                          $"on teacher_language.language_level_id = language_level.id " +
-                          $"join language " +
-                          $"on language_level.language_id = language.id";
+                          $"`teacher_language`.id as `id`, " +
+                          $"`teacher_language`.teacher_id as `teacher_id`, " +
+                          $"`teacher_language`.language_level_id as `language_level_id`, " +
+                          $"`language_level`.name as `language_level_name`, " +
+                          $"`language_level`.language_id as `language_id`, " +
+                          $"`language`.name as `language_name` " +
+                          $"from `teacher_language` " +
+                          $"join `language_level` " +
+                          $"on `teacher_language`.language_level_id = `language_level`.id " +
+                          $"join `language` " +
+                          $"on `language_level`.language_id = `language`.id";
     
     private Teacher _person;
 
@@ -138,10 +138,12 @@ public class TeacherInfoCardViewModel : ViewModelBase
     
     private void AddTeacher()
     {
-        string sql = $"insert into teacher (name, surname, birthday) values (" +
+        string sql = $"insert into teacher (name, surname, birthday, phone, email) values (" +
                      $"'{Person.Name}', " +
                      $"'{Person.Surname}', " +
-                     $"'{Person.Birthday.ToString("yyyy-MM-dd")}')";
+                     $"'{Person.Birthday.ToString("yyyy-MM-dd")}', " +
+                     $"'{Person.Phone}', " +
+                     $"'{Person.Email}')";
         
         using (Database db = new Database())
         {
@@ -173,6 +175,8 @@ public class TeacherInfoCardViewModel : ViewModelBase
     
     public void EditLanguageButton()
     {
+        if (CurrentItem == null)
+            return;
         var view = new TeacherLanguageInfoCard();
         var vm = new TeacherLanguageInfoCardViewModel(UpdateItems, Person, CurrentItem);
         view.DataContext = vm;
@@ -181,6 +185,14 @@ public class TeacherInfoCardViewModel : ViewModelBase
     
     public void DeleteLanguageButton()
     {
+        if (CurrentItem == null)
+            return;
+        string sql = $"delete from teacher_language where teacher_language.id = {CurrentItem.Id}";
+
+        using Database db = new Database();
         
+        db.SetData(sql);
+
+        UpdateItems();
     }
 }

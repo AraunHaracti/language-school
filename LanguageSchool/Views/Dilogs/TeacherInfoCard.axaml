@@ -6,10 +6,23 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         CanResize="False"
         SizeToContent="WidthAndHeight"
-        x:Class="LanguageSchool.Views.Dilogs.TeacherInfoCard"
+        x:Class="LanguageSchool.Views.Dialogs.TeacherInfoCard"
         x:DataType="vm:TeacherInfoCardViewModel"
         Title="TeacherInfoCard">
-    <StackPanel>
+        
+        <Design.DataContext>
+                <vm:TeacherInfoCardViewModel/>
+        </Design.DataContext>
+        
+        <Window.Styles>
+                <Style Selector="Button.Action">
+                        <Setter Property="Width" Value="150"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+        </Window.Styles>
+        
+        <StackPanel>
                 <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Имя" Width="120" Margin="10"/>
@@ -21,21 +34,35 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="День рождения" Width="120" Margin="10"/>
-                                <CalendarDatePicker SelectedDate="{Binding Person.Birthday}" Width="300" Margin="10"/>
+                                <DatePicker SelectedDate="{Binding Person.Birthday}" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Телефон" Width="120" Margin="10"/>
+                                <TextBox Text="{Binding Person.Phone}" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Почта" Width="120" Margin="10"/>
+                                <TextBox Text="{Binding Person.Email}" Width="300" Margin="10"/>
                         </StackPanel>
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal" x:Name="LanguageMenu">
-                        <Button x:Name="AddLanguage" Content="Добавить" Command="{Binding AddLanguageButton}"/>
-                        <Button x:Name="EditLanguage" Content="Изменить" Command="{Binding EditLanguageButton}"/>
-                        <Button x:Name="DeleteLanguage" Content="Удалить" Command="{Binding DeleteLanguageButton}"/>
+                        <Button x:Name="AddLanguage" Content="Добавить" Command="{Binding AddLanguageButton}" Classes="Action"/>
+                        <Button x:Name="EditLanguage" Content="Изменить" Command="{Binding EditLanguageButton}" Classes="Action"/>
+                        <Button x:Name="DeleteLanguage" Content="Удалить" Command="{Binding DeleteLanguageButton}" Classes="Action"/>
                 </StackPanel>
                 
                 <DataGrid x:Name="LanguageDataGrid" 
+                          x:CompileBindings="False" 
+                          AutoGenerateColumns="False" 
+                          CanUserSortColumns="False"
+                          CanUserResizeColumns="True"
+                          MinColumnWidth="100"
+                          IsReadOnly="True"
                           SelectedItem="{Binding CurrentItem}"
-                        ItemsSource="{Binding PersonLanguage}"
-                        Width="420"
-                        Height="200">
+                          ItemsSource="{Binding PersonLanguage}"
+                          Width="420"
+                          Height="200">
                         <DataGrid.Columns>
                                 <DataGridTextColumn Header="Язык" Binding="{Binding LanguageName}" Width="140"/>
                                 <DataGridTextColumn Header="Уровень" Binding="{Binding LanguageLevelName}" Width="100"/>

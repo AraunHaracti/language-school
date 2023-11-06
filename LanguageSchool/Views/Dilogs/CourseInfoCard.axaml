@@ -7,7 +7,7 @@
         CanResize="False"
         SizeToContent="WidthAndHeight"
         x:DataType="vm:CourseInfoCardViewModel"
-        x:Class="LanguageSchool.Views.Dilogs.CourseInfoCard"
+        x:Class="LanguageSchool.Views.Dialogs.CourseInfoCard"
         Title="CourseInfoCard">
     
         <Design.DataContext>

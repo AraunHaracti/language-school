@@ -2,8 +2,37 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:LanguageSchool.ViewModels.Dialogs"
+        CanResize="False"
+        SizeToContent="WidthAndHeight"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="LanguageSchool.Views.Dilogs.ScheduleInfoCard"
+        x:DataType="vm:ScheduleInfoCardViewModel"
+        x:Class="LanguageSchool.Views.Dialogs.ScheduleInfoCard"
         Title="ScheduleInfoCard">
-  Welcome to Avalonia!
+        
+        <Design.DataContext>
+                <vm:ScheduleInfoCardViewModel/>
+        </Design.DataContext>
+        
+        <StackPanel>
+                <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Группа" Width="120" Margin="10"/>
+                                <ComboBox x:Name="GroupsName" ItemsSource="{Binding GroupsName}" SelectedIndex="{Binding GroupsNameIndex}" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Информация" Width="120" Margin="10"/>
+                                <TextBox Text="{Binding Item.About, Mode=TwoWay}" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Дата" Width="120" Margin="10"/>
+                                <DatePicker SelectedDate="{Binding Item.Datetime}" Width="300" Margin="10"/>
+                        </StackPanel>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+                        <Button x:Name="Ok" Content="Применить" Click="Ok_OnClick" HorizontalContentAlignment="Center" Width="100"/>
+                        <Button x:Name="Exit" Content="Отмена" Click="Exit_OnClick" HorizontalContentAlignment="Center" Width="100"/>
+                </StackPanel>
+        </StackPanel>
 </Window>

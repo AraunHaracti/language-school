@@ -1,17 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using LanguageSchool.Models;
 using LanguageSchool.Utils;
-using LanguageSchool.Views.Dilogs;
+using LanguageSchool.Views.Dialogs;
 using MySql.Data.MySqlClient;
 using ReactiveUI;
-
 
 namespace LanguageSchool.ViewModels.Dialogs;
 
@@ -90,10 +88,10 @@ public class ClientInfoCardViewModel : ViewModelBase
                     LanguageId = reader.GetInt32("language_id"),
                     LanguageLevelName = reader.GetString("language_level_name"),
                     LanguageName = reader.GetString("language_name"),
+                    LastExperience = reader.GetString("last_experience"),
+                    Needs = reader.GetString("needs"),
                 };
-                currentItem.LastExperience = (reader.IsDBNull("last_experience") ? null : reader.GetString("last_experience"));
-                currentItem.Needs = (reader.IsDBNull("needs") ? null : reader.GetString("needs"));
-
+                
                 _itemsFromDatabase.Add(currentItem);
             }
         }
@@ -196,6 +194,8 @@ public class ClientInfoCardViewModel : ViewModelBase
 
     public void DeleteItemButton()
     {
+        if (CurrentItem == null)
+            return;
         string sql = $"delete from client_language where client_language.id = {CurrentItem.Id}";
 
         using Database db = new Database();

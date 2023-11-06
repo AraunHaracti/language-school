@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 
-namespace LanguageSchool.Views.Dilogs;
+namespace LanguageSchool.Views.Dialogs;
 
 public partial class ClientLanguageInfoCard : Window
 {

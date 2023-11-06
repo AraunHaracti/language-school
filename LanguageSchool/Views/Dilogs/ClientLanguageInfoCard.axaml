@@ -7,7 +7,7 @@
         CanResize="False"
         SizeToContent="WidthAndHeight"
         x:DataType="vm:ClientLanguageInfoCardViewModel"
-        x:Class="LanguageSchool.Views.Dilogs.ClientLanguageInfoCard"
+        x:Class="LanguageSchool.Views.Dialogs.ClientLanguageInfoCard"
         Title="ClientLanguageInfoCard">
         
         <Design.DataContext>

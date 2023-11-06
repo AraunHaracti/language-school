@@ -8,9 +8,35 @@
         CanResize="False"
         SizeToContent="WidthAndHeight"
         x:DataType="vm:GroupInfoCardViewModel"
-        x:Class="LanguageSchool.Views.Dilogs.GroupInfoCard"
+        x:Class="LanguageSchool.Views.Dialogs.GroupInfoCard"
         Title="GroupInfoCard">
-    <StackPanel>
+        
+        <Design.DataContext>
+                <vm:GroupInfoCardViewModel/>
+        </Design.DataContext>
+        
+        <Window.Styles>
+                <Style Selector="TextBox.Search">
+                        <Setter Property="Width" Value="300"/>
+                        <Setter Property="Margin" Value="5"/>
+                </Style>
+                <Style Selector="Button.Action">
+                        <Setter Property="Width" Value="150"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+                <Style Selector="Button.Pagination">
+                        <Setter Property="Width" Value="40"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+                <Style Selector="TextBlock.Pagination">
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+        </Window.Styles>
+        
+        <StackPanel>
                 <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Название" Width="120" Margin="10"/>
@@ -26,10 +52,12 @@
                         </StackPanel>
                 </StackPanel>
                 
-                <StackPanel Orientation="Horizontal" x:Name="ClientMenu">
+                <StackPanel Orientation="Vertical" x:Name="ClientMenu">
                         <TextBox x:Name="SearchTextBox" Text="{Binding SearchQuery, Mode=TwoWay}" Classes="Search"/>
-                        <Button x:Name="AddLanguage" Content="Добавить" Command="{Binding AddClientButton}"/>
-                        <Button x:Name="DeleteLanguage" Content="Удалить" Command="{Binding DeleteClientButton}"/>
+                        <StackPanel Orientation="Horizontal">
+                                <Button x:Name="AddLanguage" Content="Добавить" Command="{Binding AddClientButton}" Classes="Action"/>
+                                <Button x:Name="DeleteLanguage" Content="Удалить" Command="{Binding DeleteClientButton}" Classes="Action"/>        
+                        </StackPanel>
                 </StackPanel>
                 
                     <StackPanel x:Name="ClientDataGrid">
@@ -38,9 +66,9 @@
                                   Width="420"
                                   Height="200">
                                 <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Имя" Binding="{Binding Name}"/>
-                                        <DataGridTextColumn Header="Фамилия" Binding="{Binding Surname}"/>
-                                        <DataGridTextColumn Header="День рождения" Binding="{Binding Birthday, StringFormat=d}"/>
+                                        <DataGridTextColumn Header="Имя" Binding="{Binding ClientName}"/>
+                                        <DataGridTextColumn Header="Фамилия" Binding="{Binding ClientSurname}"/>
+                                        <DataGridTextColumn Header="День рождения" Binding="{Binding ClientBirthday, StringFormat=d}"/>
                                 </DataGrid.Columns>
                         </DataGrid>
 

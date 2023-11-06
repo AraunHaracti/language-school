@@ -10,7 +10,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using LanguageSchool.Models;
 using LanguageSchool.Utils;
 using LanguageSchool.ViewModels.Dialogs;
-using LanguageSchool.Views.Dilogs;
+using LanguageSchool.Views.Dialogs;
 using MySql.Data.MySqlClient;
 using ReactiveUI;
 
@@ -93,18 +93,8 @@ public class PaymentsViewModel : ViewModelBase, IDisposable
     
     public void AddItemButton()
     {
-        var view = new PaymentInfoCard(InfoCardEnum.Add);
+        var view = new PaymentInfoCard();
         var vm = new PaymentInfoCardViewModel(GetAndUpdateItems);
-        view.DataContext = vm;
-        view.ShowDialog(_parentWindow);
-    }
-
-    public void OpenCardItemButton()
-    {
-        if (CurrentItem == null)
-            return;
-        var view = new PaymentInfoCard(InfoCardEnum.Info);
-        var vm = new PaymentInfoCardViewModel(CurrentItem);
         view.DataContext = vm;
         view.ShowDialog(_parentWindow);
     }

@@ -4,7 +4,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using LanguageSchool.Utils;
 
-namespace LanguageSchool.Views.Dilogs;
+namespace LanguageSchool.Views.Dialogs;
 
 public partial class CourseInfoCard : Window
 {
@@ -24,9 +24,10 @@ public partial class CourseInfoCard : Window
     private void Ok_OnClick(object? sender, RoutedEventArgs e)
     {
         var dataContext = DataContext as ViewModels.Dialogs.CourseInfoCardViewModel;
-        dataContext.ActionCourseLanguage();
+        bool result = dataContext.ActionCourseLanguage();
         
-        Close();
+        if (result)
+            Close();
     }
 
     private void Exit_OnClick(object? sender, RoutedEventArgs e)

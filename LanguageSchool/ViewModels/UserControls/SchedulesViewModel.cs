@@ -9,7 +9,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using LanguageSchool.Models;
 using LanguageSchool.Utils;
 using LanguageSchool.ViewModels.Dialogs;
-using LanguageSchool.Views.Dilogs;
+using LanguageSchool.Views.Dialogs;
 using MySql.Data.MySqlClient;
 using ReactiveUI;
 
@@ -26,7 +26,7 @@ public class SchedulesViewModel : ViewModelBase, IDisposable
     private readonly string _sql = "select " +
                                    "`schedule`.id as `id`, " +
                                    "`schedule`.group_id as `group_id`, " +
-                                   "`group`.name as `name`, " +
+                                   "`group`.name as `group_name`, " +
                                    "`schedule`.about as `about`, " +
                                    "`schedule`.datetime as `datetime` " +
                                    "from `schedule` " +
@@ -85,7 +85,7 @@ public class SchedulesViewModel : ViewModelBase, IDisposable
     
     public void AddItemButton()
     {
-        var view = new ScheduleInfoCard(InfoCardEnum.Add);
+        var view = new ScheduleInfoCard();
         var vm = new ScheduleInfoCardViewModel(GetAndUpdateItems);
         view.DataContext = vm;
         view.ShowDialog(_parentWindow);
@@ -95,7 +95,7 @@ public class SchedulesViewModel : ViewModelBase, IDisposable
     {
         if (CurrentItem == null)
             return;
-        var view = new ScheduleInfoCard(InfoCardEnum.Edit);
+        var view = new ScheduleInfoCard();
         var vm = new ScheduleInfoCardViewModel(GetAndUpdateItems, CurrentItem);
         view.DataContext = vm;
         view.ShowDialog(_parentWindow);
@@ -153,7 +153,7 @@ public class SchedulesViewModel : ViewModelBase, IDisposable
                 GroupId = reader.GetInt32("group_id"),
                 GroupName = reader.GetString("group_name"),
                 About = reader.GetString("about"),
-                Datetime = reader.GetDateTime("date"),
+                Datetime = reader.GetDateTime("datetime"),
             };
 
             _itemsFromDatabase.Add(currentItem);
