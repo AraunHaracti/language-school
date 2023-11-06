@@ -15,9 +15,10 @@ public partial class ClientLanguageInfoCard : Window
     private void Ok_OnClick(object? sender, RoutedEventArgs e)
     {
         var dataContext = DataContext as ViewModels.Dialogs.ClientLanguageInfoCardViewModel;
-        dataContext.ActionClientLanguage();
+        bool result = dataContext.ActionClientLanguage();
         
-        Close();
+        if (result)
+            Close();
     }
 
     private void Exit_OnClick(object? sender, RoutedEventArgs e)

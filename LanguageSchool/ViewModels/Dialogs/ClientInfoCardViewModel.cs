@@ -186,6 +186,8 @@ public class ClientInfoCardViewModel : ViewModelBase
 
     public void EditItemButton()
     {
+        if (CurrentItem == null)
+            return;
         var view = new ClientLanguageInfoCard();
         var vm = new ClientLanguageInfoCardViewModel(UpdateItems, Person, CurrentItem);
         view.DataContext = vm;
@@ -199,5 +201,7 @@ public class ClientInfoCardViewModel : ViewModelBase
         using Database db = new Database();
         
         db.SetData(sql);
+
+        UpdateItems();
     }
 }

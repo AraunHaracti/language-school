@@ -134,8 +134,11 @@ public class ClientLanguageInfoCardViewModel : ViewModelBase
         _isEdit = true;
     }
 
-    public void ActionClientLanguage()
+    public bool ActionClientLanguage()
     {
+        if (LanguageLevelsNameIndex == -1)
+            return false;
+        
         if (_isEdit)
         {
             EditClientLanguage();
@@ -146,6 +149,8 @@ public class ClientLanguageInfoCardViewModel : ViewModelBase
         }
         
         _action.Invoke();
+
+        return true;
     }
 
     private void AddClientLanguage()
@@ -178,8 +183,8 @@ public class ClientLanguageInfoCardViewModel : ViewModelBase
                                      it.Name == LanguagesName[LanguagesNameIndex]).ToList()[0].Id).
                          Where(it =>
                              it.Name == LanguageLevelsName[LanguageLevelsNameIndex]).ToList()[0].Id}, " +
-                     $"last_experience = {PersonLanguage.LastExperience}, " +
-                     $"needs = {PersonLanguage.Needs}, " +
+                     $"last_experience = '{PersonLanguage.LastExperience}', " +
+                     $"needs = '{PersonLanguage.Needs}' " +
                      $"where id = {PersonLanguage.Id}";
                      
         using (Database db = new Database())

@@ -14,6 +14,14 @@
                 <vm:ClientInfoCardViewModel></vm:ClientInfoCardViewModel>
         </Design.DataContext>
         
+        <Window.Styles>
+                <Style Selector="Button.Action">
+                        <Setter Property="Width" Value="150"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+        </Window.Styles>
+        
         <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
@@ -39,12 +47,18 @@
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal" x:Name="LanguageMenu">
-                        <Button x:Name="AddLanguage" Content="Добавить" Command="{Binding AddItemButton}"/>
-                        <Button x:Name="EditLanguage" Content="Изменить" Command="{Binding EditItemButton}"/>
-                        <Button x:Name="DeleteLanguage" Content="Удалить" Command="{Binding DeleteItemButton}"/>
+                        <Button x:Name="AddLanguage" Content="Добавить" Command="{Binding AddItemButton}" Classes="Action"/>
+                        <Button x:Name="EditLanguage" Content="Изменить" Command="{Binding EditItemButton}" Classes="Action"/>
+                        <Button x:Name="DeleteLanguage" Content="Удалить" Command="{Binding DeleteItemButton}" Classes="Action"/>
                 </StackPanel>
                 
                 <DataGrid x:Name="LanguageDataGrid" 
+                          x:CompileBindings="False" 
+                          AutoGenerateColumns="False" 
+                          CanUserSortColumns="False"
+                          CanUserResizeColumns="True"
+                          MinColumnWidth="100"
+                          IsReadOnly="True"
                           SelectedItem="{Binding CurrentItem}"
                           ItemsSource="{Binding PersonLanguage}"
                           Width="420"
