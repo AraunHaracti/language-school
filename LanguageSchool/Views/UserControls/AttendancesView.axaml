@@ -2,13 +2,73 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:LanguageSchool.ViewModels.UserControls"
+             xmlns:utils="clr-namespace:LanguageSchool.Utils"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:AttendancesViewModel"
+             Background="Beige"
              x:Class="LanguageSchool.Views.UserControls.AttendancesView">
     
-    <DataGrid>
+    <Design.DataContext>
+        <vm:AttendancesViewModel/>
+    </Design.DataContext>
+    
+    <UserControl.Styles>
+        <Style Selector="TextBox.Search">
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style Selector="Button.Action">
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Button.Pagination">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="TextBlock.Pagination">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Styles>
+    
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <TextBox x:Name="SearchTextBox" Text="{Binding SearchQuery, Mode=TwoWay}" Classes="Search"/>
+            <Button x:Name="AddClient" Content="Добавить" Command="{Binding AddItemButton}" Classes="Action"/>
+            <Button x:Name="EditClient" Content="Изменить" Command="{Binding EditItemButton}" Classes="Action"/>
+        </StackPanel>
+    
+        <DataGrid x:Name="ItemDataGrid" 
+                  x:CompileBindings="False" 
+                  AutoGenerateColumns="False" 
+                  CanUserSortColumns="False"
+                  CanUserResizeColumns="True"
+                  MinColumnWidth="100"
+                  IsReadOnly="True" 
+                  ItemsSource="{Binding ItemsOnDataGrid}"
+                  SelectedItem="{Binding CurrentItem}"
+                  Height="600">
         <DataGrid.Columns>
-            <DataGridTextColumn Header="Клиент"/>
+            <DataGridTextColumn Header="Группа" Binding="{Binding GroupName}" Width="200"/>
+            <DataGridTextColumn Header="Клиент" Binding="{Binding ClientName}" Width="200"/>
+            <DataGridTextColumn Header="Дата" Binding="{Binding ScheduleDatetime, StringFormat=d}" Width="200"/>
+            <DataGridTextColumn Header="Оценка" Binding="{Binding Value}" Width="200"/>
         </DataGrid.Columns>
     </DataGrid>
-    
+                    
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="15">
+            <Button Content="&lt;&lt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.FirstItems}" Classes="Pagination"/>
+            <Button Content="&lt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.PreviousItems}" Classes="Pagination"/>
+            <TextBlock Classes="Pagination">
+                <Run Text="{Binding CurrentPage}" />
+                <Run Text="/"/>
+                <Run Text="{Binding TotalPages}" />
+            </TextBlock>
+            <Button Content="&gt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.NextItems}" Classes="Pagination"/>
+            <Button Content="&gt;&gt;" Command="{Binding TakeItems}" CommandParameter="{x:Static utils:TakeItemsEnum.LastItems}" Classes="Pagination"/>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using LanguageSchool.Demos;
 using LanguageSchool.Utils;
 using LanguageSchool.ViewModels;
 using LanguageSchool.Views;
@@ -20,7 +21,11 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var modules = ReflectionHelper.CreateAllInstancesOf<IModule>();
+            IEnumerable<IModule> modules = new List<IModule>()
+            {
+                new WelcomeDemo(), new AttendancesDemo(), new ClientsDemo(), new CoursesDemo(), new CoursesDemo(),
+                new GroupsDemo(), new PaymentsDemo(), new SchedulesDemo(), new TeachersDemo()
+            };
             var vm = new MainWindowViewModel(modules);
             desktop.MainWindow = new MainWindow
             {

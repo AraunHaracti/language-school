@@ -1,0 +1,43 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:LanguageSchool.ViewModels.Dialogs"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        CanResize="False"
+        SizeToContent="WidthAndHeight"
+        x:DataType="vm:AttendanceInfoCardViewModel"
+        x:Class="LanguageSchool.Views.Dilogs.AttendanceInfoCard"
+        Title="AttendanceInfoCard">
+        
+        <Design.DataContext>
+                <vm:AttendanceInfoCardViewModel/>
+        </Design.DataContext>
+        
+        <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Группа" Width="120" Margin="10"/>
+                                <ComboBox x:Name="GroupName" ItemsSource="{Binding GroupsName}" SelectedIndex="{Binding GroupsNameIndex, Mode=TwoWay}" PropertyChanged="GroupName_OnPropertyChanged" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Клиент" Width="120" Margin="10"/>
+                                <ComboBox x:Name="ClientsName" ItemsSource="{Binding ClientsName}" SelectedIndex="{Binding ClientsNameIndex}" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Занятие" Width="120" Margin="10"/>
+                                <ComboBox x:Name="SchedulesName" ItemsSource="{Binding SchedulesName, StringFormat=d}" SelectedIndex="{Binding SchedulesNameIndex}" Width="300" Margin="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Оценка" Width="120" Margin="10"/>
+                                <ComboBox x:Name="ValuesName" ItemsSource="{Binding ValuesName}" SelectedIndex="{Binding ValuesNameIndex}" Width="300" Margin="10"/>
+                        </StackPanel>
+                </StackPanel>
+                        
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+                        <Button x:Name="Ok" Content="Применить" Click="Ok_OnClick" HorizontalContentAlignment="Center" Width="100"/>
+                        <Button x:Name="Exit" Content="Отмена" Click="Exit_OnClick" HorizontalContentAlignment="Center" Width="100"/>
+                </StackPanel>
+        </StackPanel>
+        
+</Window>
