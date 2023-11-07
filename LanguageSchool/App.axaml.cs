@@ -23,7 +23,7 @@ public partial class App : Application
         {
             IEnumerable<IModule> modules = new List<IModule>()
             {
-                new WelcomeDemo(), new AttendancesDemo(), new ClientsDemo(), new CoursesDemo(), new CoursesDemo(),
+                new WelcomeDemo(), new AttendancesDemo(), new ClientsDemo(), new CoursesDemo(),
                 new GroupsDemo(), new PaymentsDemo(), new SchedulesDemo(), new TeachersDemo()
             };
             var vm = new MainWindowViewModel(modules);

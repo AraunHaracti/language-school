@@ -32,10 +32,10 @@ public class PaymentInfoCardViewModel : ViewModelBase
 
     public int GroupClientsNameIndex
     {
-        get => _groupsNameIndex;
+        get => _groupClientsNameIndex;
         set
         {
-            _groupsNameIndex = value;
+            _groupClientsNameIndex = value;
             this.RaisePropertyChanged();
         }
     }

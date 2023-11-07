@@ -2,9 +2,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:LanguageSchool.ViewModels.UserControls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:WelcomeViewModel"
              x:Class="LanguageSchool.Views.UserControls.WelcomeView">
-    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-        "Добро пожаловать"
-    </TextBlock>
+    
+    <Design.DataContext>
+        <vm:WelcomeViewModel/>
+    </Design.DataContext>
+    
+    <StackPanel Orientation="Vertical">
+        <TextBlock Text="Добро пожаловать" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        
+        <TextBlock Text="Отчеты" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Grid Height="600">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+        
+            <ListBox Grid.Column="0"
+                     Background="#ccc9b8"
+                     ItemsSource="{Binding Modules}"
+                     SelectedItem="{Binding SelectedModule, Mode=TwoWay}">
+            
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="10" HorizontalAlignment="Center"/>    
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        
+            <ContentPresenter Grid.Column="1" 
+                              Content="{Binding UserInterface}" 
+                              x:Name="OutputView"/>
+        </Grid>
+        
+    </StackPanel>
+    
 </UserControl>

@@ -22,6 +22,7 @@
         <entry key="Views/Dilogs/TeacherInfoCard.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/Dilogs/TeacherLanguageInfoCard.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/MainWindow.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/Statistics/PaymentView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/TeachersView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/Test.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/Test2View.axaml" value="LanguageSchool.csproj" />
@@ -32,6 +33,7 @@
         <entry key="Views/UserControls/GroupsView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/UserControls/PaymentsView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/UserControls/SchedulesView.axaml" value="LanguageSchool.csproj" />
+        <entry key="Views/UserControls/StatisticView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/UserControls/TeachersView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/UserControls/WelcomeView.axaml" value="LanguageSchool.csproj" />
         <entry key="Views/UserControls/WelcomeМшуц.axaml" value="LanguageSchool.csproj" />
